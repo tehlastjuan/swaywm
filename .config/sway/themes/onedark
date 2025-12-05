@@ -1,0 +1,41 @@
+# Global theme variables
+set $kvantum-theme midnight 
+set $gtk-theme Matcha-dark-aliz
+set $gtk-color-scheme prefer-dark
+set $icon-theme Papirus-Dark-Maia
+set $cursor-theme xcursor-breeze
+set $term-font IosevkaCustom Nerd Font 11.25
+set $gui-font Roboto 10
+
+set $color0  #1e222a
+set $color1  #2d3343
+set $color2  #373f52
+set $color3  #3f495a
+set $color4  #546178
+set $color5  #8e97a9
+set $color6  #abb2bf
+set $color7  #d6dae0
+set $color8  #e06c75
+set $color9  #d19a66
+set $color10 #e5c07b
+set $color11 #98c379
+set $color12 #56b6c2
+set $color13 #61afef
+set $color14 #c678dd
+set $color15 #be5046
+
+set $text-color #abb2bf
+set $background-color #1e222a
+
+set $accent-color #e06c75
+set $selection-color #61afef
+
+# Property Name           Border  BG      Text    Indicator Child Border
+client.focused            #e06c75 #e06c75 #1e222a #e06c75 #2d3343
+client.focused_inactive   #1e222a #2d3343 #1e222a #56b6c2 #1e222a
+client.focused_tab_title  #1e222a #3f495a #1e222a
+client.unfocused          #1e222a #292e39 #1e222a #56b6c2 #1e222a
+client.urgent             #1e222a #292e39 #1e222a #56b6c2 #1e222a
+
+# Main background
+output * bg $background-color solid_color

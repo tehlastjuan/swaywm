@@ -1,0 +1,21 @@
+#----- units
+
+set $initialize_foot_server '[ -x "$(command -v foot)" ] && systemctl --now --user enable foot-server.socket && systemctl --now --user enable foot-server'
+set $initialize_idlehack_daemon '[ -x "$(command -v idlehack)" ] && systemctl --now --user enable idlehack'
+set $initialize_mounting_daemon '[ -x "$(command -v pcmanfm)" ] && systemctl --now --user enable pcmanfm'
+set $initialize_poweralert_daemon '[ -x "$(command -v poweralertd)" ] && systemctl --now --user enable poweralertd'
+set $initialize_waybar '[ -x "$(command -v waybar)" ] && (pkill waybar || exit 0) && systemctl --now --user enable waybar && (systemctl --user start waybar || /usr/share/sway/scripts/waybar.sh)'
+
+
+#----- autostarts
+
+set $xdg-dirs '[ -x "$(command -v xdg-user-dirs-update)" ] && exec xdg-user-dirs-update'
+set $autostart_dex '[ -x "$(command -v dex)" ] && gdbus wait --session org.kde.StatusNotifierWatcher && dex -a -e SWAY'
+set $autotiling '[ -x "$(command -v autotiling)" ] && autotiling'
+set $auto_xdg_keyboard 'grep -q xkb_layout ~/.config/sway/inputs/inputs.conf || /usr/share/sway/scripts/keyboard.sh'
+
+
+#----- daemons
+
+set $swappy_notify '[ -x "$(command -v swappy)" ] && $bash_lib/sway/screenshot.sh'
+set $calendar_daemon 'calcurse --daemon'

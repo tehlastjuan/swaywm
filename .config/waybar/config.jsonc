@@ -1,0 +1,208 @@
+// -------------------------------------------------------------------------
+// Global configuration
+// -------------------------------------------------------------------------
+[
+  {
+    "layer": "top",
+    "position": "top",
+    "output": [ "eDP-1" ],
+    "mode": "dock",
+    "height": 22,
+    "name": "laptop",
+    "include": [
+      "~/.config/waybar/modules.jsonc"
+    ],
+    "modules-left": [
+      "sway/workspaces",
+      "sway/window"
+    ],
+    "modules-center": [
+      "sway/mode"
+    ],
+    "modules-right": [
+      "tray",
+      "network#wlp",
+      "network#enp",
+      "cpu",
+      "memory",
+      "disk",
+      "battery",
+      "temperature",
+      "bluetooth",
+      "pulseaudio#vol",
+      "pulseaudio#mic",
+      "idle_inhibitor",
+      "clock"
+    ],
+    "tray": {
+      "icon-size": 11,
+      "spacing": 13
+    },
+    "cpu": {
+      "interval": 1,
+      "format": "{icon}{usage}%",
+      "format-icons": [
+        "<span color='#61afef'> </span>",
+        "<span color='#61afef'> </span>",
+        "<span color='#61afef'> </span>",
+        "<span color='#56b6c2'> </span>",
+        "<span color='#56b6c2'> </span>",
+        "<span color='#e5c07b'> </span>",
+        "<span color='#e5c07b'> </span>",
+        "<span color='#d19a66'> </span>",
+        "<span color='#e06c75'> </span>"
+      ],
+      "states": {
+        "warning": 70,
+        "critical": 90
+      },
+      "tooltip-format": "{load} {usageN} {icon} {iconN} FREQ: {min_frequency}{avg_frequency}{max_frequency}"
+    },
+    "temperature": {
+      "interval": 1,
+      "critical-threshold": 90,
+      "format": "{icon}{temperatureC}Cº",
+      "format-icons": [
+        "<span color='#61afef'>󰏈 </span>",
+        "<span color='#61afef'>󰏈 </span>",
+        "<span color='#61afef'>󰏈 </span>",
+        "<span color='#56b6c2'>󰏈 </span>",
+        "<span color='#56b6c2'>󰏈 </span>",
+        "<span color='#e5c07b'>󰏈 </span>",
+        "<span color='#e5c07b'>󰏈 </span>",
+        "<span color='#d19a66'>󰏈 </span>",
+        "<span color='#e06c75'>󰏈 </span>"
+      ],
+      "states": {
+        "warning": 70,
+        "critical": 90
+      },
+      "hwmon-path": "/sys/class/hwmon/hwmon5/temp1_input",
+      //"tooltip-format": "exec 'swaymsg exec $(cat /sys/class/hwmon/hwmon4/name)'"
+      "tooltip": false
+    }
+  },
+  {
+    "layer": "top",
+    "position": "top",
+    "output": [ "LG Electronics LG ULTRAWIDE 0x000029C2"],
+    "mode": "dock",
+    "height": 22,
+    "include": [
+      "~/.config/waybar/modules.jsonc"
+    ],
+    "modules-left": [
+      "sway/workspaces",
+      "sway/window"
+    ],
+    "modules-center": [
+      "sway/mode"
+    ],
+    "modules-right": [
+      "tray",
+      "network#wlp",
+      "network#enp",
+      "cpu",
+      "memory",
+      "temperature#cpu",
+      "temperature#gpu",
+      "temperature#ram",
+      "temperature#disk",
+      "temperature#network",
+      "bluetooth",
+      "pulseaudio#vol",
+      "pulseaudio#mic",
+      // "sway/language",
+      "idle_inhibitor",
+      "clock"
+    ]
+  },
+  {
+    "layer": "top",
+    "position": "top",
+    "output": "Dell Inc. DELL U2421HE 4TGZX13",
+    "mode": "dock",
+    "height": 22,
+    "name": "vert_top",
+    "include": [
+      "~/.config/waybar/modules.jsonc"
+    ],
+    "modules-left": [
+      "sway/window"
+    ],
+    "sway/window": {
+      "format": "{title}"
+    }
+  },
+  {
+    "layer": "top",
+    "position": "bottom",
+    "output": "Dell Inc. DELL U2421HE 4TGZX13",
+    "mode": "dock",
+    "height": 22,
+    "name": "vert_bottom",
+    "include": [
+      "~/.config/waybar/modules.jsonc"
+    ],
+    "modules-left": [
+      "network#utu",
+      "network#wlp",
+      "network#enp",
+      "memory",
+      "disk"
+    ],
+    "modules-right": [
+      "tray",
+      "custom/weather",
+      "systemd-failed-units",
+      "bluetooth",
+      "pulseaudio#vol",
+      "pulseaudio#mic",
+      "idle_inhibitor",
+      "clock"
+    ],
+    "network#utu": {
+      "interval": 1,
+      "interface": "utun20",
+      "format": "<span color='#e06c75'>󰈀</span> {ipaddr}/{cidr}",
+      "format-linked": "",
+      "format-disabled": "",
+      "format-disconnected": "",
+      "tooltip": false
+    },
+    "network#wlp": {
+      "interval": 1,
+      "interface": "wlp2s0",
+      "format": "{icon} {ipaddr}/{cidr}",
+      "format-disabled": "",
+      "format-disconnected": "󰖪",
+      "format-icons": [
+        "<span color='#e06c75'>󰤯</span>",
+        "<span color='#d19a66'>󰤟</span>",
+        "<span color='#e5c07b'>󰤢</span>",
+        "<span color='#56b6c2'>󰤥</span>",
+        "<span color='#61afef'>󰤨</span>"
+      ],
+      "tooltip": false
+    },
+    "network#enp": {
+      "interval": 1,
+      "interface": "enp198s0f4u1u1",
+      "format": "<span color='#56b6c2'>󰈀</span> {ipaddr}/{cidr}",
+      "format-linked": "",
+      "format-disabled": "",
+      "format-disconnected": "",
+      "tooltip": false
+    },
+    "memory": {
+      "interval": 60,
+      "format": "<span color='#56b6c2'></span> {used}GiB[{total}GiB]",
+      "tooltip-format": "Swap: {swapUsed} GiB of {swapTotal} Gib"
+    },
+    "disk": {
+      "interval": 60,
+      "format": "<span color='#56b6c2'></span> {used}[{total}]",
+      "path": "/"
+    }
+  }
+]

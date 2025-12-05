@@ -1,0 +1,201 @@
+#!/usr/bin/env bash
+# shellcheck disable=1090,1091
+# symlink to /usr/local/bin/userenv
+
+_UID=$(loginctl list-users | grep active | cut -d ' ' -f 1)
+_USER="$(id -nu "${_UID:-1000}")"
+
+export _USER
+export _HOME="/home/${_USER}"
+
+if ! export -p | grep -q LANG=; then
+  export LANG=en_US.UTF-8
+fi
+
+if ! export -p | grep -q LC_CTYPE=; then
+  export LC_CTYPE=en_US.UTF-8
+fi
+
+if ! export -p | grep -q LC_ALL=; then
+  export LC_ALL=en_US.UTF-8
+fi
+
+if ! export -p | grep -q XDG_CONFIG_HOME=; then
+  export XDG_CONFIG_HOME="${_HOME}/.config"
+fi
+
+if ! export -p | grep -q XDG_CACHE_HOME=; then
+  export XDG_CACHE_HOME="${_HOME}/.cache"
+fi
+
+if ! export -p | grep -q XDG_DATA_HOME=; then
+  export XDG_DATA_HOME="${_HOME}/.local/share"
+fi
+
+if ! export -p | grep -q XDG_STATE_HOME=; then
+  export XDG_STATE_HOME="${_HOME}/.local/state"
+fi
+
+if ! export -p | grep -q XDG_RUNTIME_DIR=; then
+  export XDG_RUNTIME_DIR="/run/user/${_UID}"
+fi
+
+if ! export -p | grep -q DBUS_SESSION_BUS_ADDRESS=; then
+  export DBUS_SESSION_BUS_ADDRESS="unix:path=${XDG_RUNTIME_DIR}/bus"
+fi
+
+if ! export -p | grep -q WAYLAND_DISPLAY=; then
+  for _file in "${XDG_RUNTIME_DIR}"/wayland*; do
+    if [ -S "$_file" ]; then 
+      export WAYLAND_DISPLAY="${_file##*/}"
+    fi
+  done
+  unset _file
+fi
+
+if ! export -p | grep -q SWAYSOCK=; then
+  for _file in "${XDG_RUNTIME_DIR}"/sway-ipc*; do
+    if [ -S "$_file" ]; then
+      export SWAYSOCK="$_file"
+    fi
+  done
+  unset _file
+fi
+
+if ! export -p | grep -q BASH_LIB=; then
+  export BASH_LIB="$XDG_DATA_HOME/bash_lib"
+fi
+
+if ! export -p | grep -q DOT_FILES=; then
+  export DOT_FILES="${_HOME}/.dotfiles"
+fi
+
+if ! export -p | grep -q VMS_CACHE=; then
+  export VMS_CACHE="$XDG_CACHE_HOME/vms"
+fi
+
+if ! export -p | grep -q ISO_DOWNLOADS=; then
+  export ISO_DOWNLOADS="$XDG_DOWNLOADS_DIR/iso"
+fi
+
+if ! export -p | grep -q CRYPTS_CACHE=; then
+  export CRYPTS_CACHE="$XDG_CACHE_HOME/crypts"
+fi
+
+if ! export -p | grep -q CRYPTS_MOUNT=; then
+  export CRYPTS_MOUNT=/mnt/crypts
+fi
+
+get_env() {
+  case "${1-''}" in
+    LANG)             echo "LANG=$LANG" ;;
+    LC_CTYPE)         echo "LC_CTYPE=$LC_CTYPE" ;;
+    LC_ALL)           echo "LC_ALL=$LC_ALL" ;;
+    XDG_CONFIG_HOME)  echo "XDG_CONFIG_HOME=$XDG_CONFIG_HOME" ;;
+    XDG_CACHE_HOME)   echo "XDG_CACHE_HOME=$XDG_CACHE_HOME" ;;
+    XDG_DATA_HOME)    echo "XDG_DATA_HOME=$XDG_DATA_HOME" ;;
+    XDG_STATE_HOME)   echo "XDG_STATE_HOME=$XDG_STATE_HOME" ;;
+    XDG_RUNTIME_DIR)  echo "XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR" ;;
+    DBUS_SESSION_BUS_ADDRESS)
+      echo "DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS" ;;
+    WAYLAND_DISPLAY)  echo "WAYLAND_DISPLAY=$WAYLAND_DISPLAY" ;;
+    SWAYSOCK)         echo "SWAYSOCK=$SWAYSOCK" ;;
+    BASH_LIB)         echo "BASH_LIB=$BASH_LIB" ;;
+    DOT_FILES)        echo "DOT_FILES=$DOT_FILES" ;;
+    VMS_CACHE)        echo "VMS_CACHE=$VMS_CACHE" ;;
+    ISO_DOWNLOADS)    echo "ISO_DOWNLOADS=$ISO_DOWNLOADS" ;;
+    CRYPTS_CACHE)     echo "CRYPTS_CACHE=$CRYPTS_CACHE" ;;
+    CRYPTS_MOUNT)     echo "CRYPTS_MOUNT=$CRYPTS_MOUNT" ;;
+    *)
+      cat << EOF
+LANG=$LANG
+LC_CTYPE=$LC_CTYPE
+LC_ALL=$LC_ALL
+XDG_CONFIG_HOME=$XDG_CONFIG_HOME
+XDG_CACHE_HOME=$XDG_CACHE_HOME
+XDG_DATA_HOME=$XDG_DATA_HOME
+XDG_STATE_HOME=$XDG_STATE_HOME
+XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR
+DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS
+WAYLAND_DISPLAY=$WAYLAND_DISPLAY
+SWAYSOCK=$SWAYSOCK
+BASH_LIB=$BASH_LIB
+DOT_FILES=$DOT_FILES
+VMS_CACHE=$VMS_CACHE
+ISO_DOWNLOADS=$ISO_DOWNLOADS
+CRYPTS_CACHE=$CRYPTS_CACHE
+CRYPTS_MOUNT=$CRYPTS_MOUNT
+EOF
+  ;;
+  esac
+}
+
+get_realpath() {
+  realpath -s "${1:-${BASH_SOURCE[-1]}}"
+}
+
+get_dirname() {
+  dirname "$(realpath -s "${1:-${BASH_SOURCE[-1]}}")"
+}
+
+source_fzfrc() {
+  . "$XDG_CONFIG_HOME/bash/fzfrc"
+}
+
+source_namespace() {
+  [ $# -eq 0 ] && return 1
+  local _namespace
+  local _file
+  for _namespace in "$@"; do
+    for _file in "${BASH_LIB}/${_namespace}"/*; do
+      if [ -f "$_file" ]; then . "$_file"; fi
+    done
+  done
+  unset _namespace
+  unset _file
+}
+
+userexec() {
+  sudo -u "$_USER" "$@"
+}
+
+_prt_userenv_info() {
+  cat << EOT
+usage: userenv [FLAG] [OPT]? [ARGS]?
+       userenv [--exec   | -e]                             := user_exec [ARGS]
+       userenv [--file   | -f]                             := print userenv filepath
+       userenv [--get    | -g] [--path| -p]                := get realpath of \$1
+       userenv [--get    | -g] [--dir | -d]                := get dirname of \$1
+       userenv [--get    | -g] [--env | -e]                := get current env vars
+       userenv [--source | -s] [--namespace | -n] [ARGS]   := source \$namespace
+       userenv [--source | -s] [--fzf | -f]                := source fzfrc
+
+EOT
+}
+
+_userenv() {
+  case "${1:-''}" in
+    --exec|-e)          shift; user_exec "$@" ;;
+    --file|-f)          get_realpath "$0" ;;
+    --get|-g)
+      case "${2:-''}" in
+        --path|-p)      shift 2; get_realpath "$@" ;;
+        --dir|-d)       shift 2; get_dirname "$@" ;;
+        --env|-e)       get_env "${3-''}" ;;
+        *)              _prt_userenv_info ;;
+      esac
+      ;;
+    --source|-s)
+      case "${2:-''}" in
+        --namespace|-n) shift; source_namespace "$@" ;;
+        --fzf|-f)       shift; source_fzfrc ;;
+        *)              _prt_userenv_info ;;
+      esac
+      ;;
+    *)                  _prt_userenv_info ;;
+  esac
+}
+
+if [[ "${#BASH_SOURCE[@]}" -eq 1 ]]; then
+  _userenv "$@"
+fi

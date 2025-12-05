@@ -1,0 +1,338 @@
+{
+  // -------------------------------------------------------------------------
+  // Modules
+  // -------------------------------------------------------------------------
+  "sway/workspaces": {
+    "all-outputs": false
+  },
+  "sway/window": {
+    "format": "{title}",
+    "align": 1,
+    "tooltip": false,
+    "icon": false,
+    "max-length": 333,
+    "rewrite": {}
+  },
+  "sway/mode": {
+    "format": "<span style=\"italic\">{}</span>",
+    "tooltip": false
+  },
+  "tray": {
+    "icon-size": 13,
+    "spacing": 14
+  },
+  "network": {
+    "interval": 1,
+    "format": "󰤥 {bandwidthTotalBytes:>}",
+    "format-linked": "",
+    "format-disabled": "",
+    "format-disconnected": "󰖪",
+    "tooltip-format": "󰤥 {ifname}\n{essid}\n{signalStrength}%, {frequency}Mhz\n{ipaddr}/{cidr}\n{netmask}\n{gwaddr}\n<span color='#56b6c2'>󰇚 </span> {bandwidthDownBytes:=}\n<span color='#61afef'>󰕒 </span> {bandwidthUpBytes:=}"
+  },
+  "network#utu": {
+    "interval": 1,
+    "interface": "utun420",
+    "format": "<span color='#e06c75'> </span>{bandwidthTotalBytes:>}",
+    "format-linked": "",
+    "format-disabled": "",
+    "format-disconnected": "",
+    "tooltip-format": " {ifname}\n{ipaddr}/{cidr}\n{netmask}\n{gwaddr}\n<span color='#56b6c2'>󰇚 </span> {bandwidthDownBytes:=}\n<span color='#61afef'>󰕒 </span> {bandwidthUpBytes:=}"
+  },
+  "network#wlp": {
+    "interval": 1,
+    "interface": "wlp2s0",
+    "format": "{essid} {icon} {bandwidthTotalBytes:>}",
+    "format-linked": "",
+    "format-disabled": "",
+    "format-disconnected": "󰖪",
+    "format-icons": [
+      "<span color='#e06c75'>󰤟 </span>",
+      "<span color='#e06c75'>󰤟 </span>",
+      "<span color='#e06c75'>󰤟 </span>",
+      "<span color='#d19a66'>󰤢 </span>",
+      "<span color='#d19a66'>󰤢 </span>",
+      "<span color='#e5c07b'>󰤢 </span>",
+      "<span color='#e5c07b'>󰤢 </span>",
+      "<span color='#56b6c2'>󰤥 </span>",
+      "<span color='#61afef'>󰤨 </span>"
+    ],
+    "tooltip-format": "󰤥 {ifname}\n{essid}\n{signalStrength}%, {frequency}Mhz\n{ipaddr}/{cidr}\n{netmask}\n{gwaddr}\n<span color='#56b6c2'>󰇚 </span> {bandwidthDownBytes:=}\n<span color='#61afef'>󰕒 </span> {bandwidthUpBytes:=}"
+  },
+  "network#enp": {
+    "interval": 1,
+    "interface": "enp198s0f4u1u1",
+    "format": "<span color='#56b6c2'>󰈀</span> {bandwidthTotalBytes:>}",
+    "format-linked": "",
+    "format-disabled": "",
+    "format-disconnected": "",
+    "tooltip-format": "󰈀 {ifname}\n{ipaddr}/{cidr}\n{netmask}\n{gwaddr}\n<span color='#56b6c2'>󰇚 </span> {bandwidthDownBytes:=}\n<span color='#61afef'>󰕒 </span> {bandwidthUpBytes:=}"
+  },
+  "temperature#network": {
+    "interval": 5,
+    "format": "{icon}{temperatureC}Cº",
+    "format-icons": [
+      "<span color='#61afef'>󰛳 </span>",
+      "<span color='#61afef'>󰛳 </span>",
+      "<span color='#61afef'>󰛳 </span>",
+      "<span color='#56b6c2'>󰛳 </span>",
+      "<span color='#56b6c2'>󰛳 </span>",
+      "<span color='#e5c07b'>󰛳 </span>",
+      "<span color='#d19a66'>󰛳 </span>",
+      "<span color='#e06c75'>󰛳 </span>"
+    ],
+    "states": {
+      "warning": 70,
+      "critical": 90
+    },
+    "hwmon-path": "/sys/class/hwmon/hwmon2/temp1_input",
+    "tooltip": false
+  },
+
+  "cpu": {
+    "interval": 1,
+    "format": "{icon0} {icon1} {icon2} {icon3} {icon4} {icon5} {icon6} {icon7}",
+    "format-icons": [
+      "<span color='#d6dae0'>󰪞</span>", // green
+      "<span color='#d6dae0'>󰪟</span>", // blue
+      "<span color='#d6dae0'>󰪠</span>", // white
+      "<span color='#e5c07b'>󰪡</span>", // white
+      "<span color='#e5c07b'>󰪢</span>", // yellow
+      "<span color='#d19a66'>󰪣</span>", // yellow
+      "<span color='#d19a66'>󰪤</span>", // orange
+      "<span color='#e06c75'>󰪥</span>"  // red
+    ],
+    "states": {
+      "warning": 70,
+      "critical": 90
+    },
+    "tooltip-format": "{load} {usageN} {icon} {iconN} FREQ: {min_frequency}{avg_frequency}{max_frequency}"
+    //"tooltip": false
+  },
+  "temperature#cpu": {
+    "interval": 1,
+    "critical-threshold": 90,
+    "format": "{icon}{temperatureC}Cº",
+    "format-icons": [
+      "<span color='#61afef'> </span>",
+      "<span color='#61afef'> </span>",
+      "<span color='#61afef'> </span>",
+      "<span color='#56b6c2'> </span>",
+      "<span color='#56b6c2'> </span>",
+      "<span color='#e5c07b'> </span>",
+      "<span color='#d19a66'> </span>",
+      "<span color='#e06c75'> </span>"
+    ],
+    "states": {
+      "warning": 70,
+      "critical": 90
+    },
+    "hwmon-path": "/sys/class/hwmon/hwmon5/temp1_input",
+    "tooltip": false
+  },
+  "memory": {
+    "interval": 5,
+    "format": "<span color='#56b6c2'> </span>{percentage}%",
+    "states": {
+      "warning": 70,
+      "critical": 90
+    },
+    "tooltip-format": "RAM used: {used}GiB of {total}GiB\rSwap used: {swapUsed}GiB of {swapTotal}GiB"
+  },
+  "temperature#ram": {
+    "interval": 5,
+    "format": "{icon}{temperatureC}Cº",
+    "format-icons": [
+      "<span color='#61afef'> </span>",
+      "<span color='#61afef'> </span>",
+      "<span color='#61afef'> </span>",
+      "<span color='#56b6c2'> </span>",
+      "<span color='#56b6c2'> </span>",
+      "<span color='#e5c07b'> </span>",
+      "<span color='#d19a66'> </span>",
+      "<span color='#e06c75'> </span>"
+    ],
+    "states": {
+      "warning": 70,
+      "critical": 90
+    },
+    "hwmon-path": "/sys/class/hwmon/hwmon9/temp1_input",
+    "tooltip": false
+  },
+  "disk": {
+    "interval": 60,
+    "format": "<span color='#56b6c2'> </span>{percentage_used}%",
+    "path": "/",
+    "tooltip-format": "Storage used: {used} of {total}"
+  },
+  "temperature#disk": {
+    "interval": 5,
+    "format": "{icon}{temperatureC}Cº",
+    "format-icons": [
+      "<span color='#61afef'> </span>",
+      "<span color='#61afef'> </span>",
+      "<span color='#61afef'> </span>",
+      "<span color='#56b6c2'> </span>",
+      "<span color='#56b6c2'> </span>",
+      "<span color='#e5c07b'> </span>",
+      "<span color='#d19a66'> </span>",
+      "<span color='#e06c75'> </span>"
+    ],
+    "states": {
+      "warning": 70,
+      "critical": 90
+    },
+    //"hwmon-path-abs": "/sys/devices/pci0000:00/0000:00:01.1/0000:01:00.0/nvme/nvme0",
+    //"input-filename": "temp3_input",
+    "hwmon-path": "/sys/class/hwmon/hwmon4/temp3_input",
+    "tooltip": false
+  },
+  "temperature#gpu": {
+    "interval": 5,
+    "format": "{icon}{temperatureC}Cº",
+    "format-icons": [
+      "<span color='#61afef'>󰨇 </span>",
+      "<span color='#61afef'>󰨇 </span>",
+      "<span color='#61afef'>󰨇 </span>",
+      "<span color='#56b6c2'>󰨇 </span>",
+      "<span color='#56b6c2'>󰨇 </span>",
+      "<span color='#e5c07b'>󰨇 </span>",
+      "<span color='#d19a66'>󰨇 </span>",
+      "<span color='#e06c75'>󰨇 </span>"
+    ],
+    "states": {
+      "warning": 70,
+      "critical": 90
+    },
+    "hwmon-path": "/sys/class/hwmon/hwmon6/temp1_input",
+    "tooltip": false
+  },
+  "battery": {
+    "interval": 5,
+    "bat": "BAT0",
+    "format-full":         "<span color='#61afef'>{icon}</span>{time}",
+    "format-charging":     "<span color='#56b6c2'>{icon}</span>{time}",
+    "format-discharging":  "<span color='#e5c07b'>{icon}</span>{time}",
+    "format-not-charging": "<span color='#d19a66'>{icon}</span>{time}",
+    "format-icons": [" ", " ", " ", " ", " "],
+    "format-time": "{H}h{M}m",
+    "states": {
+      "full": 100,
+      "warning": 25,
+      "critical": 15
+    },
+    "tooltip": true,
+    "tooltip-format": "Capacity: {capacity}%\rTime: {time}\rHealth: {health}%\rPower: {power}W\rCycles: {cycles}"
+  },
+  "bluetooth": {
+    "format": "{status}",
+    "format-on": "<span color='#56b6c2'>󰂯</span>",
+    "format-connected": "<span color='#56b6c2'>󰂱</span>",
+    "format-off": "󰂲",
+    "format-disabled": "󰂲",
+    "tooltip-format": "{status}",
+    "tooltip-on": "{device_alias}\rAddress: {device_address}",
+    "tooltip-connected": "{device_alias}\rAddress: {device_address}"
+  },
+  "pulseaudio#vol": {
+    "format":       "<span color='#56b6c2'>{icon}</span> {volume}%",
+    "format-off":   "󰖁 OFF",
+    "format-muted": "󰝟 {volume}%",
+    "format-icons": {
+      "headphones": "󰋋",
+      "headset": "󰋎",
+      "default": [ "󰕿", "󰖀", "󰕾" ]
+    },
+    "states": {
+      "off": 3
+    }
+  },
+  "pulseaudio#mic": {
+    "format": "{format_source}",
+    "format-source":       "<span color='#56b6c2'>󰍬</span> {volume}%",
+    "format-source-muted": "󰍭 {volume}%",
+    "tooltip": false
+  },
+  "idle_inhibitor": {
+    "format": "{icon}",
+    "start-activated": true,
+    "format-icons": {
+      "activated": "",
+      "deactivated": "󰓛"
+    },
+    "on-click": "bash inhibit-idle status"
+  },
+  "clock": {
+    "interval": 60,
+    "format": "v{:L%V %a %d %b %R}",
+    "tooltip-format": "<small>{calendar}</small>",
+    "calendar": {
+      "mode": "year",
+      "mode-mon-col": 3,
+      "weeks-pos": "left",
+      "on-scroll": 1,
+      "on-click-right": "mode",
+      "format": {
+        "months":   "<span color='#e5c07b'><b>{}</b></span>",
+        "days":     "<span color='#c8ccd4'>{}</span>",
+        "weeks":    "<span color='#56b6c2'><b>{}</b></span>",
+        "weekdays": "<span color='#61afef'><b>{}</b></span>",
+        "today":    "<span color='#e06c75'><b><u>{}</u></b></span>"
+      }
+    },
+    "actions": {
+      "on-click-left": "swaymsg exec \\$calendar",
+      "on-click-right": "mode"
+    }
+  },
+  "systemd-failed-units": {
+    "hide-on-ok": true,
+    "system": true,
+    "user": true,
+    "format": "<span color='#e06c75'>{nr_failed_system}</span>:<span color='#c5803f'>{nr_failed_user}</span>"
+  },
+  "custom/weather": {
+    "format": "{} Cº",
+    "tooltip": true,
+    "interval": 900,
+    "exec": "wttrbar --location Skoghall",
+    "return-type": "json"
+  },
+  "sway/language": {
+    "format": "{flag}",
+    "min-length": 0,
+    "tooltip": false,
+    "on-click": "swaymsg input type:keyboard xkb_switch_layout next"
+  }
+  // "custom/kanshi": {
+  //   "format": "<span color='#546178'>{icon}</span>",
+  //   "format-icons": {
+  //     "laptop": " ",
+  //     "docked": " ",
+  //     "multi": "󱂬 "
+  //   },
+  //   "return-type": "json",
+  //   "exec-on-event": true,
+  //   "interval": "once",
+  //   "exec": "$HOME/.config/waybar/scripts/get_kanshi_profile.sh",
+  //   "on-click": "$HOME/.config/waybar/scripts/get_kanshi_profile.sh",
+  //   "tooltip-format": "Profile: {alt}"
+  // }
+  // "custom/pacman": {
+  //   "format": "󰏖 {}",
+  //   "interval": 3600,
+  //   "exec-if": "[ $(pamac checkupdates -q | wc -l) -gt 0 ]",
+  //   "exec": "pamac checkupdates -q | wc -l",
+  //   "on-click": "pkill -RTMIN+4 waybar",
+  //   "signal": 4
+  // },
+  // "custom/wf-recorder": {
+  //     "interval": "once",
+  //     "return-type": "json",
+  //     "format": "{}",
+  //     "tooltip-format": "{tooltip}",
+  //     "exec": "echo '{\"class\": \"recording\",\"text\":\"雷\",\"tooltip\":\"press $mod+Esc to stop recording\"}'",
+  //     "exec-if": "pgrep wf-recorder",
+  //     "on-click": "killall -s SIGINT wf-recorder",
+  //     "signal": 8
+  // },
+  }

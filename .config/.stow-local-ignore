@@ -1,0 +1,42 @@
+# Comments and blank lines are allowed.
+
+RCS
+.+,v
+
+CVS
+\.\#.+       # CVS conflict files / emacs lock files
+\.cvsignore
+
+\.svn
+_darcs
+\.hg
+
+\.git
+\.gitignore
+\.gitmodules
+
+.+~          # emacs backup files
+\#.*\#       # emacs autosave files
+
+^/README.*
+^/LICENSE.*
+^/COPYING
+
+# bluetuith
+# environment.d
+# fontconfig
+# foot
+# gtk-3.0
+# kanshi
+# kvantum_themes
+# mako
+# qt5ct
+# qt6ct
+# sway
+# systemd
+# terminfo
+# waybar
+# wob
+# xdg-desktop-portal
+# mimeapps.list
+# user-dirs.dirs

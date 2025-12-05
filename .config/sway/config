@@ -1,0 +1,190 @@
+# shellcheck disable=SC2148,SC2086,SC2154,SC2046,SC2016
+
+#----- Script folders
+
+set $sway_cfg $HOME/.config/sway
+set $sway_lib $HOME/.local/share/bash_lib/sway
+set $local_lib $HOME/.local/bin
+
+
+#----- Variables
+
+set {
+
+  # Logo key. Use Mod1 for Alt and Mod4 for Super.
+  $mod Mod4
+
+  # Direction keys
+  $left h
+  $down j
+  $up k
+  $right l
+
+  $left_alt comma
+  $right_alt period
+
+  # Add --to-code to bindsym, support for non-latin layouts
+  $bindsym bindsym --to-code
+
+  # For user's convenience, the same for unbindsym
+  $unbindsym unbindsym --to-code
+}
+
+#----- Apps
+
+set {
+
+  # once-script
+  $once $sway_lib/once.sh
+
+  # Terminal emulator
+  $term footclient
+  $term_cwd $term -D "$(swaycwd 2>/dev/null || echo $HOME)"
+  $term_float footclient --app-id floating_shell --window-size-chars 82x25
+
+  # Application launcher
+  $menu exec $once $term -a launcher sway-launcher-desktop
+
+  # Task manager
+  $task_manager exec $once $term -a tasks btop
+
+  # bluetooth menu
+  $bluetooth exec $once $term -a bluetooth bluetuith
+
+  # pulseaudio command
+  $pulseaudio exec $once $term -a audiomixer pulsemixer
+
+  # videos application
+  $yewtube exec $once $term -a yewtube $local_lib/yt
+
+  # music application
+  $ncspot exec $once $term -a ncspot $local_lib/ncspot
+
+  # Calendar app
+  $calendar exec $once $term_float calcurse
+
+  # Emoji app
+  $emoji-picker emoji-picker
+
+  # pass
+  $pass $local_lib/ucrypt --pass --process
+
+  # clear empty crypts folders
+  $clear_crypts $sway_lib/clr_crypts.sh
+
+  # screenshots application
+  $grimshot grimshot
+
+  $pipe_output $grimshot save output -
+  $pipe_selection $grimshot save area -
+
+  $notify_paste [[ $(wl-paste -l) == "image/png" ]] && notify-send "Screenshot copied to clipboard"
+  $swappy swappy -f -
+  $upload_pipe curl -s -F "file=@-;filename=.png" https://x0.at/ | tee >(wl-copy) >(xargs notify-send)
+
+  $screenshot_screen $pipe_output | $swappy && $notify_paste
+  $screenshot_screen_upload $pipe_output | $upload_pipe
+
+  $screenshot_selection $pipe_selection | $swappy && $notify_paste
+  $screenshot_selection_upload $pipe_selection | $upload_pipe
+}
+
+# Autostart applications. Can be removed soon-ish as it is being imported in userspace.
+include $sway_cfg/autostart
+
+
+#----- Controls
+
+set {
+
+  # initialize wob socket
+  $onscreen_bar $sway_lib/wobctl.sh --init
+
+  # brightness control
+  $brightness_up $sway_lib/brightness.sh --up
+  $brightness_down $sway_lib/brightness.sh --down
+
+  # scaling
+  $scale_up /usr/share/sway/scripts/scale.sh up
+  $scale_down /usr/share/sway/scripts/scale.sh down
+  $scale_default /usr/share/sway/scripts/scale.sh default
+
+  # audio control
+  $volume_up $sway_lib/mediactl.sh --sink up
+  $volume_down $sway_lib/mediactl.sh --sink down 
+  $volume_mute $sway_lib/mediactl.sh --sink toggle
+  $volume_mute_init $sway_lib/mediactl.sh --sink mute
+
+  $mic_up $sway_lib/mediactl.sh --source up
+  $mic_down $sway_lib/mediactl.sh --source down
+  $mic_mute $sway_lib/mediactl.sh --source toggle
+  $mic_mute_init $sway_lib/mediactl.sh --source mute
+
+  # clipboard history
+  $clipboard cliphist list | rofi -dmenu -p "Select item to copy" -lines 10 | cliphist decode | wl-copy
+  $clipboard-del cliphist list | rofi -dmenu -p "Select item to delete" -lines 10 | cliphist delete
+  $purge_cliphist_logout true
+}
+
+
+#----- Lock screen
+
+# Lock configuration
+set $locking $sway_lib/lockctl.sh
+
+# Idle configuration
+set $swayidle $sway_lib/swayidle.sh
+
+# hide cursor after 5 seconds of inactivty
+seat seat0 hide_cursor 5000
+
+
+#----- Look'n Feel
+
+set $monitor_lap "Lenovo Group Limited 0x403A Unknown"
+set $monitor_vert "Dell Inc. DELL U2421HE 4TGZX13"
+set $monitor_wide "LG Electronics LG ULTRAWIDE 0x000029C2"
+
+output $monitor_lap {
+  pos 1400 1310
+  # pos 0 0
+  mode 1920x1200@60Hz
+  scale 1.25
+}
+
+# Kanshi conf
+set $kanshi $sway_lib/kanshictl.sh
+
+# Theme colors
+include $sway_cfg/themes/onedark
+
+# Window borders
+gaps outer 0
+gaps inner 0
+smart_gaps off
+smart_borders on
+default_floating_border pixel 0
+default_border pixel 0
+hide_edge_borders none
+font pango: monospace 0.5
+titlebar_border_thickness 0
+titlebar_padding 0
+
+# floating borders on demand, grabbed from:
+# https://www.reddit.com/r/swaywm/comments/1lplyhu/dynamically_adjust_title_bar_border_for_tiled_or/
+set $floating_borders_toggle $sway_lib/swayborders.sh
+
+# Mouse focus
+focus_follows_mouse no
+
+
+#----- Load Sway conf
+
+# Sway input sources
+include $sway_cfg/inputs/inputs.conf
+
+# Sway modes
+include $sway_cfg/modes/*.conf
+
+# Sway env & services
+include $sway_cfg/config.d/*.conf

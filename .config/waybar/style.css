@@ -1,0 +1,258 @@
+/* -----------------------------------------------------------------------------
+ * Waybar color configuration
+ * -------------------------------------------------------------------------- */
+
+@define-color g_fore_bright  #d6dae0;
+@define-color g_fore_normal  #abb2bf;
+@define-color g_fore_darker  #8e97a9;
+
+@define-color g_midd_bright  #697996;
+@define-color g_midd_normal  #546178;
+@define-color g_midd_darker  #3f495a;
+
+@define-color g_lowr_bright  #373f52;
+@define-color g_lowr_normal  #2d3343;
+@define-color g_lowr_darker  #232734;
+
+@define-color g_back_bright  #292e39;
+@define-color g_back_normal  #1e222a;
+@define-color g_back_darker  #13161b;
+
+@define-color g_prim_bright  #7adcd7;
+@define-color g_prim_normal  #56b6c2;
+@define-color g_prim_darker  #44919b;
+
+@define-color g_secn_bright  #e48189;
+@define-color g_secn_normal  #e06c75;
+@define-color g_secn_darker  #dc5761;
+
+@define-color g_info_bright  #73ccfe;
+@define-color g_info_normal  #61afef;
+@define-color g_info_darker  #4d8cbf;
+
+@define-color g_succ_bright  #ace98e;
+@define-color g_succ_normal  #98c379;
+@define-color g_succ_darker  #799c60;
+
+@define-color g_warn_bright  #e5c07b;
+@define-color g_warn_normal  #d19a66;
+@define-color g_warn_darker  #c5803f;
+
+@define-color g_erro_bright  #cb746c;
+@define-color g_erro_normal  #be5046;
+@define-color g_erro_darker  #9b3f36;
+
+@define-color g_black        #000000;
+@define-color g_white        #FFFFFF;
+
+@define-color inactive-color @g_midd_normal;
+@define-color warning-color  @g_warn_normal;
+@define-color error-color    @g_erro_darker;
+
+@define-color text-color     @g_fore_normal;
+@define-color back-color     @g_back_normal;
+
+
+/* -----------------------------------------------------------------------------
+ * Reset all styles
+ * -------------------------------------------------------------------------- */
+
+* {
+  border: none;
+  border-radius: 0;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  font-family: "IosevkaCustom Nerd Font", monospace;
+}
+
+button, label, box {
+  all: unset;
+}
+
+/* -----------------------------------------------------------------------------
+ * Common styles
+ * -------------------------------------------------------------------------- */
+
+window#waybar {
+  font-size: 13px;
+}
+
+window .modules-left #workspaces button {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+window .modules-left #workspaces,
+window .modules-left #workspaces button,
+window .modules-left #window,
+window .modules-left #memory,
+window .modules-left #cpu,
+window .modules-left #disk,
+window .modules-left #network.utu,
+window .modules-left #network.wlp,
+window .modules-left #network.enp,
+window .modules-center #mode,
+window .modules-right #tray,
+window .modules-right #memory,
+window .modules-right #disk,
+window .modules-right #temperature,
+window .modules-right #network.utu,
+window .modules-right #network.wlp,
+window .modules-right #network.enp,
+window .modules-right #upower,
+window .modules-right #battery,
+window .modules-right #bluetooth,
+window .modules-right #pulseaudio.vol,
+window .modules-right #pulseaudio.mic,
+window .modules-right #idle_inhibitor,
+window .modules-right #custom-kanshi,
+window .modules-right #custom-weather,
+window .modules-right #custom-pacman,
+window .modules-right #language {
+  padding: 0 6px;
+}
+
+window .modules-right #cpu {
+  padding: 0 10px 0 6px;
+}
+
+window .modules-right #clock {
+  padding: 0 10px 0 6px;
+}
+
+tooltip {
+  font-size: 14.25px;
+}
+
+
+/* -----------------------------------------------------------------------------
+ * Laptop styles
+ * -------------------------------------------------------------------------- */
+
+window.laptop#waybar {
+  font-size: 11px;
+}
+
+window.laptop #window {
+  font-size: 11px;
+}
+
+window.laptop .modules-left #workspaces button {
+  font-size: 12px;
+}
+
+window.laptop .modules-right #cpu {
+  padding: 0 6px;
+}
+
+window.laptop .modules-right #pulseaudio.mic {
+  padding: 0 4px;
+}
+
+tooltip {
+  font-size: 13.25px;
+}
+
+
+/* -----------------------------------------------------------------------------
+ * Vertical styles
+ * -------------------------------------------------------------------------- */
+
+window.vert_top .modules-left #window {
+  padding: 0 8px;
+  min-width: 1062px;
+}
+
+window.vert_bottom .modules-right #systemd-failed-units {
+  padding: 1px 8px 0 4px;
+}
+
+window.vert_bottom .modules-right #custom-weather {
+  padding: 0 5px 1px 8px;
+}
+
+
+/* -----------------------------------------------------------------------------
+ * Common styles - COLOR
+ * -------------------------------------------------------------------------- */
+
+/* DEBUG - Each module */
+/* window #workspaces, */
+/* window #window, */
+/* window #mode, */
+/* window #tray, */
+/* window #cpu, */
+/* window #memory, */
+/* window #disk, */
+/* window #network, */
+/* window #temperature, */
+/* window #battery, */
+/* window #upower, */
+/* window #bluetooth, */
+/* window #idle_inhibitor, */
+/* window #upower, */
+/* window #custom-weather, */
+/* window #custom-pacman, */
+/* window #custom-kanshi, */
+/* window #pulseaudio, */
+/* window #language, */
+/* window #systemd-failed-units, */
+/* window #clock { */
+/*   border: 1px solid red; */
+/* } */
+
+@keyframes blink-warning {
+  70% { color: @text-color; }
+  to { color: @warning-color; }
+}
+
+@keyframes blink-critical {
+  70% { color: @text-color; }
+  to { color: @error-color; }
+}
+
+window#waybar {
+  color: @text-color;
+  background: @back-color;
+}
+
+window #workspaces button.focused {
+  color: @text-color;
+}
+
+window #workspaces button.urgent {
+  color: @error_color;
+}
+
+window #workspaces button,
+window #bluetooth.off,
+window #bluetooth.disabled,
+window #pulseaudio.vol.muted,
+window #pulseaudio.mic.source-muted,
+window #idle_inhibitor.deactivated {
+  color: @inactive-color;
+}
+
+window #cpu.warning,
+window #memory.warning,
+window #battery.warning,
+window #temperature.cpu.warning,
+window #temperature.gpu.warning,
+window #temperature.ram.warning,
+window #temperature.disk.warning,
+window #temperature.network.warning,
+window #custom-pacman {
+  color: @warning-color;
+}
+
+window #cpu.critical,
+window #memory.critical,
+window #battery.critical,
+window #temperature.cpu.critical,
+window #temperature.gpu.critical,
+window #temperature.ram.critical,
+window #temperature.disk.critical,
+window #temperature.network.critical {
+  color: @error-color;
+}

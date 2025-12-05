@@ -1,0 +1,35 @@
+# configure as many display profiles as you need
+# refer to "man kanshi" to find out how to configure profiles
+# https://github.com/emersion/kanshi#configuration-file
+# * get your current screen name: swaymsg -t get_outputs
+# * set the resolution and position for your screen: output HDMI1 mode 1920x1080 position 0,0
+# * set the scaling for your screen: output HDMI1 scale 2
+
+output "Lenovo Group Limited 0x403A Unknown" {
+  position 1400,1310
+  mode 1920x1200@60Hz
+  scale 1.25
+  alias $LAPTOP
+}
+
+output "Dell Inc. DELL U2421HE 4TGZX13" {
+  position 0,0
+  mode 1920x1080@60Hz
+  transform 270
+  alias $VERTICAL
+}
+
+output "LG Electronics LG ULTRAWIDE 0x000029C2" {
+  position 1080,230
+  mode 2560x1080@99.943Hz
+  alias $WIDE
+}
+
+profile docked {
+  output $VERTICAL enable
+  output $WIDE enable
+  output $LAPTOP disable
+  exec swaymsg workspace 9, move workspace to '"Dell Inc. DELL U2421HE 4TGZX13"'
+  exec swaymsg workspace 1, move workspace to '"LG Electronics LG ULTRAWIDE 0x000029C2"'
+  exec swaymsg focus output '"LG Electronics LG ULTRAWIDE 0x000029C2"'
+}

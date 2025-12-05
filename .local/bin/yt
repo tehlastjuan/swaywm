@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+source /usr/local/bin/userenv
+source_fzfrc
+
+set -euo pipefail
+
+_yt() {
+  #logger "$(printenv)"
+  command "${BASH_LIB}/utils/ytx"
+}
+
+if [[ "${#BASH_SOURCE[@]}" -eq 1 ]]; then
+  _yt
+fi

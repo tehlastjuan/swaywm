@@ -1,0 +1,24 @@
+#!/usr/bin/env sh
+
+LID_STATE_FILE="/proc/acpi/button/lid/LID/state"
+BAT_STATE_FILE="/sys/class/power_supply/AC/online"
+
+get_lid_state() {
+  read -r ls < "$LID_STATE_FILE"
+  case "$ls" in
+    *open) state="open" ;;
+    *closed) state="close" ;;
+    *) state="ERROR" ;;
+  esac
+  echo "$state" # && notify-send "$state"
+}
+
+get_battery_state() {
+  read -r bs < "$BAT_STATE_FILE"
+  case "$bs" in
+    0) state="discharging" ;;
+    1) state="charging" ;;
+    *) state="ERROR" ;;
+  esac
+  echo "$state" # && notify-send "$state"
+}
