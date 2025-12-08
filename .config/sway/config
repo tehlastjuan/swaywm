@@ -67,7 +67,7 @@ set {
   $emoji-picker emoji-picker
 
   # pass
-  $pass $local_lib/ucrypt --pass --process
+  $pass $sway_lib/pass.sh
 
   # clear empty crypts folders
   $clear_crypts $sway_lib/clr_crypts.sh
