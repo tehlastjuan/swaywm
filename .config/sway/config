@@ -141,15 +141,29 @@ seat seat0 hide_cursor 5000
 
 #----- Look'n Feel
 
-set $monitor_lap "Lenovo Group Limited 0x403A Unknown"
+set $monitor_lptp "Lenovo Group Limited 0x403A Unknown"
 set $monitor_vert "Dell Inc. DELL U2421HE 4TGZX13"
 set $monitor_wide "LG Electronics LG ULTRAWIDE 0x000029C2"
 
-output $monitor_lap {
-  pos 1400 1310
-  # pos 0 0
+# eDP-1
+output $monitor_lptp {
+  pos 1590 1310
   mode 1920x1200@60Hz
   scale 1.25
+}
+
+# DP-1
+output $monitor_vert {
+  pos 0 0
+  mode 1920x1080@60Hz
+  transform 90
+}
+
+# HDMI-A-1
+output $monitor_wide {
+  pos 1080 255
+  mode 2560x1080@100Hz
+  adaptive_sync on
 }
 
 # Kanshi conf

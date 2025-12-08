@@ -1,0 +1,59 @@
+* {
+    highlight: bold;
+    scrollbar: false;
+
+    bg0:  #1e222a;  /* black */
+    fg0:  #abb2bf;  /* white */
+    cl0:  #2d3343;  /* black */
+    cl1:  #be5046;  /* red */
+    cl2:  #98c379;  /* green */
+    cl3:  #d19a66;  /* yellow */
+    cl4:  #61afef;  /* blue */
+    cl5:  #c678dd;  /* magenta */
+    cl6:  #56b6c2;  /* cyan */
+    cl7:  #abb2bf;  /* white */
+    cl8:  #546178;  /* bright black */
+    cl9:  #e06c75;  /* red */
+    cl10: #ace98e;  /* green */
+    cl11: #e5c07b;  /* yellow */
+    cl12: #73ccfe;  /* blue */
+    cl13: #da9ef2;  /* magenta */
+    cl14: #7adcd7;  /* cyan */
+    cl15: #cdceee;  /* bright white */
+
+
+    /* Theme colors */
+    background:                   @cl0;
+    border-color:                 @cl0;
+    background-color:             @cl0;
+    normal-background:            @cl0;
+    alternate-normal-background:  @cl0;
+
+    foreground:                   @fg0;
+    normal-foreground:            @fg0;
+    alternate-normal-foreground:  @fg0;
+
+    separatorcolor:               @cl8;
+    scrollbar-handle:             @cl8;
+
+    selected-normal-background:   @cl9;
+    selected-normal-foreground:   @bg0;
+
+    active-background:            @cl6;
+    active-foreground:            @background;
+    alternate-active-background:  @active-background;
+    selected-active-background:   @cl14;
+
+    alternate-active-foreground:  @active-foreground;
+    selected-active-foreground:   @active-foreground;
+
+    urgent-background:            @cl1;
+    selected-urgent-background:   @cl3;
+    urgent-foreground:            @background;
+
+    alternate-urgent-background:  @urgent-background;
+    alternate-urgent-foreground:  @urgent-foreground;
+    selected-urgent-foreground:   @urgent-foreground;
+}
+
+// vim: ft=rasi

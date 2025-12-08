@@ -58,6 +58,8 @@ _kanshictl() {
 
   if pgrep -U "$_USER" kanshi; then pkill --oldest kanshi; fi
   kanshi --config "$XDG_CONFIG_HOME/kanshi/config.$curr_profile" &
+
+  echo "$curr_profile"
 }
 
 if [[ "${#BASH_SOURCE[@]}" -eq 1 ]]; then

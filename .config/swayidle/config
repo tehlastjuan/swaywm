@@ -1,0 +1,11 @@
+timeout 24 'brightnessctl -s && brighnessctl set 30%', resume 'brighnessctl -r'
+
+timeout 30 "${XDG_DATA_HOME}/bash_libs/sway/swaylock.sh"
+
+timeout 420 'swaymsg "output * dpms off"', resume 'swaymsg "output * dpms on"'
+
+timeout 900 'swaymsg "output * dpms on"; sleep 2; systemctl hybrid-sleep'
+
+before-sleep "${XDG_DATA_HOME}/bash_libs/sway/swaylock.sh && sleep 2"
+
+after-resume 'swaymsg "output * dpms on" && brightnessctl -r'

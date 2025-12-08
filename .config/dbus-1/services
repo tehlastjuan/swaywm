@@ -1,0 +1,5 @@
+org.freedesktop.Notifications.service
+
+[D-BUS Service]
+Name=org.freedesktop.Notifications
+Exec=/usr/lib/mako

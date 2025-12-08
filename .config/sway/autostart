@@ -5,6 +5,8 @@ set $initialize_idlehack_daemon '[ -x "$(command -v idlehack)" ] && systemctl --
 set $initialize_mounting_daemon '[ -x "$(command -v pcmanfm)" ] && systemctl --now --user enable pcmanfm'
 set $initialize_poweralert_daemon '[ -x "$(command -v poweralertd)" ] && systemctl --now --user enable poweralertd'
 set $initialize_waybar '[ -x "$(command -v waybar)" ] && (pkill waybar || exit 0) && systemctl --now --user enable waybar && (systemctl --user start waybar || /usr/share/sway/scripts/waybar.sh)'
+# set $initialize_way_displays '[ -x "$(command -v way-displays)" ] && systemctl --now --user enable way-displays'
+# set $initialize_swayr_daemon '[ -x "$(command -v swayrd)" ] && systemctl --now --user enable swayrd'
 
 
 #----- autostarts
@@ -13,6 +15,7 @@ set $xdg-dirs '[ -x "$(command -v xdg-user-dirs-update)" ] && exec xdg-user-dirs
 set $autostart_dex '[ -x "$(command -v dex)" ] && gdbus wait --session org.kde.StatusNotifierWatcher && dex -a -e SWAY'
 set $autotiling '[ -x "$(command -v autotiling)" ] && autotiling'
 set $auto_xdg_keyboard 'grep -q xkb_layout ~/.config/sway/inputs/inputs.conf || /usr/share/sway/scripts/keyboard.sh'
+set $enable_noisetorch '[ -x "$(command -v noisetorch)" ] && noisetorch -u && noisetorch -i'
 
 
 #----- daemons

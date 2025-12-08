@@ -1,72 +1,14 @@
 #!/usr/bin/env bash
 # shellcheck disable=1091,2034
 source /usr/local/bin/userenv
-source "${BASH_LIB}/crypt/cryptpass"
+source "${BASH_LIB}/sway/pass.sh"
+source "${BASH_LIB}/sway/lidctl.sh"
 source "${BASH_LIB}/utils/ulaptop"
 
 set -euo pipefail
 
-FLAGS_FILE="/tmp/userflags"
-
-declare -A FLAGS
-FLAGS[ALLOW_SLEEP]=0
-FLAGS[ALLOW_HIBERNATE]=0
-
-set_flags() {
-  local flag=${1:-''}
-  local value=${2:-0}
-  case "$flag" in
-    ALLOW_SLEEP) FLAGS[ALLOW_SLEEP]=$value ;;
-    ALLOW_HIBERNATE) FLAGS[ALLOW_HIBERNATE]=$value ;;
-    *) return 1 ;;
-  esac
-}
-
-write_flags() {
-  tee "$FLAGS_FILE" > /dev/null << EOF
-${FLAGS[ALLOW_SLEEP]:-0}
-${FLAGS[ALLOW_HIBERNATE]:-0}
-EOF
-}
-
-read_flags() {
-  [ ! -f "$FLAGS_FILE" ] && return 1
-  local -a flags
-  mapfile -t flags < "$FLAGS_FILE"
-  FLAGS[ALLOW_SLEEP]=${flags[0]:-0}
-  FLAGS[ALLOW_HIBERNATE]=${flags[1]:-0}
-}
-
-check_flags() {
-  local flag=${1-''}
-  case "$flag" in
-    ALLOW_SLEEP) return "${FLAGS[ALLOW_SLEEP]}" ;;
-    ALLOW_HIBERNATE) return "${FLAGS[ALLOW_HIBERNATE]}" ;;
-    *) return 1 ;;
-  esac
-}
-
-prt_flags() {
-  read_flags
-  echo "ALLOW_SLEEP     ${FLAGS[ALLOW_SLEEP]}"
-  echo "ALLOW_HIBERNATE ${FLAGS[ALLOW_HIBERNATE]}"
-}
-
-_test_flags() {
-  read_flags 
-  prt_flags
-  if check_flags ALLOW_SLEEP; then
-    set_flags ALLOW_SLEEP 1
-  else set_flags ALLOW_SLEEP 0; fi
-  if check_flags ALLOW_HIBERNATE; then
-    set_flags ALLOW_HIBERNATE 1
-  else set_flags ALLOW_HIBERNATE 0; fi
-  write_flags
-  prt_flags
-}
-
 clear_pass() {
-  pass_crypt --clear
+  _pass --clear
 }
 
 clear_cliphist() {
@@ -93,7 +35,7 @@ stop_windscribe() {
 
 run_kanshi() {
   command "$BASH_LIB/sway/kanshictl.sh"
-  swaymsg reload
+  # swaymsg reload
 }
 
 run_swaylock(){
@@ -108,20 +50,52 @@ runp_swaylock(){
 
 _lockctl() {
   case "${1:-''}" in
-    --test)     _test_flags ;;
-    --clear)     clear_ph ;;
-    --lock)      clear_ph && run_swaylock ;;
-    --unlock)    run_kanshi ;;
-    --suspend)   
-      clear_ph && run_swaylock &&
-        if check_flags ALLOW_SLEEP; then systemctl sleep; fi
+    --allow-sleep|-s)
+      case "${2:-''}" in
+        yes) set_flags ALLOW_SLEEP 0 ;;
+        no)  set_flags ALLOW_SLEEP 1 ;;
+        toggle) 
+          if check_flags ALLOW_SLEEP; then
+            set_flags ALLOW_SLEEP 1
+          else
+            set_flags ALLOW_SLEEP 0
+          fi
+        ;;
+        *) _prt_flags ;;
+      esac
+    ;;
+    --allow-hibernate|-h)
+      case "${2:-''}" in
+        yes) set_flags ALLOW_HIBERNATE 0 ;;
+        no)  set_flags ALLOW_HIBERNATE 1 ;;
+        toggle)
+          if check_flags ALLOW_HIBERNATE; then
+            set_flags ALLOW_HIBERNATE 1
+          else
+            set_flags ALLOW_HIBERNATE 0
+          fi
+        ;;
+        *) _prt_flags ;;
+      esac
+    ;;
+    --clear)  clear_ph ;;
+    --lock)   clear_ph && run_swaylock ;;
+    --unlock) run_kanshi ;;
+    --suspend)
+        clear_ph && run_swaylock
+        if check_flags ALLOW_SLEEP; then
+          systemctl sleep
+        fi
       ;;
-    --hibernate) clear_ph && run_swaylock &&
-        if check_flags ALLOW_HIBERNATE; then systemctl hibernate; fi
+    --hibernate)
+        clear_ph && run_swaylock
+        if check_flags ALLOW_HIBERNATE; then
+          systemctl hibernate
+        fi
       ;;
-    --logout)    clear_ph && swaymsg exit ;;
-    --reboot)    clear_ph && systemctl reboot;;
-    --shutdown)  clear_ph && systemctl poweroff;;
+    --logout)   clear_ph && swaymsg exit ;;
+    --reboot)   clear_ph && systemctl reboot;;
+    --shutdown) clear_ph && systemctl poweroff;;
     *)
       case "$(get_lid_state)" in
         open)
@@ -132,10 +106,18 @@ _lockctl() {
         ;;
         close)
           case "$(get_battery_state)" in
-            charging)    run_kanshi ;;
+            charging)
+              if [ "$(run_kanshi)" == "laptop" ]; then
+                clear_ph && run_swaylock
+                systemctl sleep
+              fi
+            ;;
             discharging) 
-              clear_ph && run_swaylock && systemctl sleep
-              ;;
+              clear_ph && run_swaylock
+              if check_flags ALLOW_SLEEP; then
+                systemctl sleep
+              fi
+            ;;
           esac
         ;;
       esac
