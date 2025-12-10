@@ -43,7 +43,7 @@ set {
   $term_float footclient --app-id floating_shell --window-size-chars 82x25
 
   # Application launcher
-  $menu exec $once $term -a launcher sway-launcher-desktop
+  $menu exec $once $term -a launcher $local_lib/sway_launcher
 
   # Task manager
   $task_manager exec $once $term -a tasks btop
@@ -55,7 +55,7 @@ set {
   $pulseaudio exec $once $term -a audiomixer pulsemixer
 
   # videos application
-  $yewtube exec $once $term -a yewtube $local_lib/yt
+  $yewtube exec $once $term -a yt $local_lib/yt
 
   # music application
   $ncspot exec $once $term -a ncspot $local_lib/ncspot
@@ -191,6 +191,8 @@ set $floating_borders_toggle $sway_lib/swayborders.sh
 # Mouse focus
 focus_follows_mouse no
 
+# Waybar
+bar swaybar_command $waybar
 
 #----- Load Sway conf
 
