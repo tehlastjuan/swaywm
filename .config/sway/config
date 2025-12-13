@@ -192,6 +192,7 @@ set $floating_borders_toggle $sway_lib/swayborders.sh
 focus_follows_mouse no
 
 # Waybar
+set $waybar waybar
 bar swaybar_command $waybar
 
 #----- Load Sway conf
