@@ -1,1 +1,7 @@
+/.olde
+*.olde
+
+.stow-local-ignore
+.stow-package-status
+
 bookmarks
