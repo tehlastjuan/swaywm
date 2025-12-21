@@ -22,10 +22,13 @@ _darcs
 ^/LICENSE.*
 ^/COPYING
 
-#----- folders & files
+#----- ignore
 
 .olde
 .*\.olde
+
+.stow-package-ignore
+.stow-package-status
 
 #----- folders
 

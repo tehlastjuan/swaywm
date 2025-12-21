@@ -1,0 +1,21 @@
+#----- folders
+
+.config/bash
+# .config/bluetuith
+# .config/environment.d
+# .config/fontconfig
+# .config/foot
+# .config/gtk-3.0
+# .config/kanshi
+.config/kvantum_themes
+# .config/mako
+# .config/qt5ct
+# .config/qt6ct
+# .config/sway
+.config/swayidle
+.config/waybar
+.config/way-displays
+# .config/wob
+# .config/xdg-desktop-portal
+
+#----- files
