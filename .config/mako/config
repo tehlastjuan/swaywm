@@ -1,14 +1,13 @@
-# set $notifications /usr/share/sway/scripts/mako.sh 
-# --font "$term-font" 
-# --text-color "$text-color" 
-# --border-color "$accent-color" 
-# --background-color "$background-color" 
-# --border-size 3 
-# --width 400 
-# --height 200 
-# --padding 20 
-# --margin 20 
-# --default-timeout 15000
+# [ GLOBAL CONFIG ]
+# max no of notification in buffer
+max-history=5
+
+# arrange notification ( +/- time or +/- priority )
+sort=+time
+
+# [ BINDING OPTIONS ]
+# Supported values: none, dismiss, dismiss-all, 
+# dismiss-group, invoke-default-action & exec <command>
 
 # on-button-left=action
 # Default: invoke-default-action
@@ -24,6 +23,8 @@
 
 # on-notify = action
 # Default: none
+
+# [ STYLE OPTIONS ]
 
 # font=$gui-font
 font=IosevkaCustom Nerd Font 11.25
