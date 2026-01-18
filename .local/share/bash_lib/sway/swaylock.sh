@@ -2,8 +2,8 @@
 
 set -euo pipefail
 
-_run_swaylock_daemon() {
-  swaylock --daemonize                                \
+run_swaylock_process() {
+  swaylock                                            \
     --line-uses-ring                                  \
     --show-failed-attempts                            \
     --ignore-empty-password                           \
@@ -35,8 +35,8 @@ _run_swaylock_daemon() {
     --separator-color       00000000
 }
 
-_run_swaylock_process() {
-  swaylock                                            \
+run_swaylock_daemon() {
+  swaylock --daemonize                                \
     --line-uses-ring                                  \
     --show-failed-attempts                            \
     --ignore-empty-password                           \
@@ -70,8 +70,15 @@ _run_swaylock_process() {
 
 _swaylock() {
   case "${1:-''}" in
-    --process)   _run_swaylock_process ;;
-    --daemon|*)  _run_swaylock_daemon ;;
+    -p|--process)
+      run_swaylock_process
+      ;;
+    -d|--daemon)
+      run_swaylock_daemon
+      ;;
+    *)
+      run_swaylock_daemon
+      ;;
   esac
 }
 

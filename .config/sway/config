@@ -1,13 +1,4 @@
-# shellcheck disable=SC2148,SC2086,SC2154,SC2046,SC2016
-
-#----- Script folders
-
-set $sway_cfg $HOME/.config/sway
-set $sway_lib $HOME/.local/share/bash_lib/sway
-set $local_lib $HOME/.local/bin
-
-
-#----- Variables
+#----- Basic bindings
 
 set {
 
@@ -30,6 +21,22 @@ set {
   $unbindsym unbindsym --to-code
 }
 
+
+#----- Script folders
+
+set {
+
+  # main config - $XDG_CONFIG_HOME/sway
+  $sway_cfg $HOME/.config/sway
+
+  # user's binaries
+  $local_lib $HOME/.local/bin
+
+  # support scripts - $XDG_DATA_HOME/bash_lib/sway
+  $sway_lib $HOME/.local/share/bash_lib/sway
+}
+
+
 #----- Apps
 
 set {
@@ -40,7 +47,7 @@ set {
   # Terminal emulator
   $term footclient
   $term_cwd $term -D "$(swaycwd 2>/dev/null || echo $HOME)"
-  $term_float footclient --app-id floating_shell --window-size-chars 82x25
+  $term_float $term --app-id floating_shell --window-size-chars 82x25
 
   # Application launcher
   $menu exec $once $term -a launcher $local_lib/sway_launcher
@@ -129,11 +136,14 @@ set {
 
 #----- Lock screen
 
-# Lock configuration
-set $locking $sway_lib/lockctl.sh
+set {
 
-# Idle configuration
-set $swayidle $sway_lib/swayidle.sh
+  # Lock configuration
+  $locking $sway_lib/lockctl.sh
+
+  # Idle configuration
+  $swayidle $sway_lib/swayidle.sh
+}
 
 # hide cursor after 5 seconds of inactivty
 seat seat0 hide_cursor 5000
@@ -141,13 +151,27 @@ seat seat0 hide_cursor 5000
 
 #----- Look'n Feel
 
-set $monitor_lptp "Lenovo Group Limited 0x403A Unknown"
-set $monitor_vert "Dell Inc. DELL U2421HE 4TGZX13"
-set $monitor_wide "LG Electronics LG ULTRAWIDE 0x000029C2"
+set {
+
+  # Monitors
+  $monitor_lptp "Lenovo Group Limited 0x403A Unknown"
+  $monitor_vert "Dell Inc. DELL U2421HE 4TGZX13"
+  $monitor_wide "LG Electronics LG ULTRAWIDE 0x000029C2"
+
+  # Kanshi conf
+  $kanshi $sway_lib/kanshictl.sh
+
+  # floating borders on demand, grabbed from:
+  # https://www.reddit.com/r/swaywm/comments/1lplyhu/dynamically_adjust_title_bar_border_for_tiled_or/
+  $floating_borders_toggle $sway_lib/swayborders.sh
+
+  # Waybar
+  $waybar waybar
+}
 
 # eDP-1
 output $monitor_lptp {
-  pos 1590 1310
+  pos 1590 1330
   mode 1920x1200@60Hz
   scale 1.25
 }
@@ -163,14 +187,7 @@ output $monitor_vert {
 output $monitor_wide {
   pos 1080 255
   mode 2560x1080@100Hz
-  adaptive_sync on
 }
-
-# Kanshi conf
-set $kanshi $sway_lib/kanshictl.sh
-
-# Theme colors
-include $sway_cfg/themes/onedark
 
 # Window borders
 gaps outer 0
@@ -184,24 +201,26 @@ font pango: monospace 0.5
 titlebar_border_thickness 0
 titlebar_padding 0
 
-# floating borders on demand, grabbed from:
-# https://www.reddit.com/r/swaywm/comments/1lplyhu/dynamically_adjust_title_bar_border_for_tiled_or/
-set $floating_borders_toggle $sway_lib/swayborders.sh
-
 # Mouse focus
 focus_follows_mouse no
 
-# Waybar
-set $waybar waybar
+# Bar command
 bar swaybar_command $waybar
 
-#----- Load Sway conf
 
-# Sway input sources
-include $sway_cfg/inputs/inputs.conf
+#----- Load Sway conf files
 
-# Sway modes
-include $sway_cfg/modes/*.conf
+include {
 
-# Sway env & services
-include $sway_cfg/config.d/*.conf
+  # Theme colors
+  $sway_cfg/themes/onedark
+
+  # Sway input sources
+  $sway_cfg/inputs/inputs.conf
+
+  # Sway modes
+  $sway_cfg/modes/*.conf
+
+  # Sway env & services
+  $sway_cfg/config.d/*.conf
+}

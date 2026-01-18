@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # shellcheck disable=1091,2034
+
 source /usr/local/bin/userenv
 source "$BASH_LIB/utils/ulaptop"
+source "$BASH_LIB/utils/uworkspace"
 
 set -euo pipefail
 
@@ -50,16 +52,19 @@ get_output_state() {
 
 _kanshictl() {
   local curr_profile
+  local -i curr_workspace
+  curr_workspace=$(get_focused_ws)
 
   case "${1-''}" in
     multi|docked|laptop) curr_profile="$1" ;;
     *) curr_profile="$(get_output_state)" ;;
   esac
 
-  if pgrep -U "$_USER" kanshi; then pkill --oldest kanshi; fi
-  kanshi --config "$XDG_CONFIG_HOME/kanshi/config.$curr_profile" &
 
-  echo "$curr_profile"
+  if pgrep -U "$_USER" kanshi; then pkill --oldest kanshi; fi
+  if kanshi --config "$XDG_CONFIG_HOME/kanshi/config.$curr_profile"; then
+    swaymsg workspace $curr_workspace && return
+  fi
 }
 
 if [[ "${#BASH_SOURCE[@]}" -eq 1 ]]; then

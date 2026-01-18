@@ -1,16 +1,17 @@
 #!/usr/bin/env bash
-# shellcheck disable=1091,2034
+
 source /usr/local/bin/userenv
 
 WOB_CFG="$XDG_CONFIG_HOME/wob/wob.ini"
+
 export WOB_PIPE="$XDG_RUNTIME_DIR/wob.sock"
 
 #----- onscreen bar
 
 init_wob() {
   [ -p "$WOB_PIPE" ] || rm -f "$WOB_PIPE"
-  local wobpid
-  wobpid=$(pgrep "wob")
+  wobpid=$(pgrep "wob"); local wobpid
+
   if [ "$wobpid" -gt 0 ]; then kill "$wobpid"; fi
   mkfifo "${XDG_RUNTIME_DIR}/wob.sock" &&
     tail -f "${XDG_RUNTIME_DIR}/wob.sock" | wob -c "$WOB_CFG"
@@ -18,7 +19,7 @@ init_wob() {
 
 show_wob() {
   [[ -p "$WOB_PIPE" ]] || { init_wob; }
-  echo "${1}" > "$WOB_PIPE"
+  echo "${1-}" > "$WOB_PIPE"
 }
 
 _prt_wobctl_info() {
