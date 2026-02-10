@@ -1,8 +1,8 @@
-#----- Basic bindings
+#----- Core bindings
 
 set {
 
-  # Logo key. Use Mod1 for Alt and Mod4 for Super.
+  # Logo key. (Use Mod1 for Alt and Mod4 for Super)
   $mod Mod4
 
   # Direction keys
@@ -56,10 +56,10 @@ set {
   $task_manager exec $once $term -a tasks btop
 
   # bluetooth menu
-  $bluetooth exec $once $term -a bluetooth bluetuith
+  $bluetooth exec $once $term -a bluetooth bluetui
 
   # pulseaudio command
-  $pulseaudio exec $once $term -a audiomixer pulsemixer
+  $pulseaudio exec $once $term -a audiomixer wiremix
 
   # videos application
   $yewtube exec $once $term -a yt $local_lib/yt
@@ -153,13 +153,8 @@ seat seat0 hide_cursor 5000
 
 set {
 
-  # Monitors
-  $monitor_lptp "Lenovo Group Limited 0x403A Unknown"
-  $monitor_vert "Dell Inc. DELL U2421HE 4TGZX13"
-  $monitor_wide "LG Electronics LG ULTRAWIDE 0x000029C2"
-
-  # Kanshi conf
-  $kanshi $sway_lib/kanshictl.sh
+  # monitors config & utils
+  $swaymonitors $sway_lib/swaymonitors.sh
 
   # floating borders on demand, grabbed from:
   # https://www.reddit.com/r/swaywm/comments/1lplyhu/dynamically_adjust_title_bar_border_for_tiled_or/
@@ -167,26 +162,9 @@ set {
 
   # Waybar
   $waybar waybar
-}
 
-# eDP-1
-output $monitor_lptp {
-  pos 1590 1330
-  mode 1920x1200@60Hz
-  scale 1.25
-}
-
-# DP-1
-output $monitor_vert {
-  pos 0 0
-  mode 1920x1080@60Hz
-  transform 90
-}
-
-# HDMI-A-1
-output $monitor_wide {
-  pos 1080 255
-  mode 2560x1080@100Hz
+  # Waybar killer
+  $kill_waybar $sway_lib/waybar.sh
 }
 
 # Window borders
@@ -217,6 +195,9 @@ include {
 
   # Sway input sources
   $sway_cfg/inputs/inputs.conf
+
+  # Sway outputs
+  $sway_cfg/outputs/outputs.conf
 
   # Sway modes
   $sway_cfg/modes/*.conf
