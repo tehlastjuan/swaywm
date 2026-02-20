@@ -160,10 +160,7 @@ set {
   # https://www.reddit.com/r/swaywm/comments/1lplyhu/dynamically_adjust_title_bar_border_for_tiled_or/
   $floating_borders_toggle $sway_lib/swayborders.sh
 
-  # Waybar
-  $waybar waybar
-
-  # Waybar killer
+  # Waybar killer / runner
   $kill_waybar $sway_lib/waybar.sh
 }
 
@@ -181,9 +178,6 @@ titlebar_padding 0
 
 # Mouse focus
 focus_follows_mouse no
-
-# Bar command
-bar swaybar_command $waybar
 
 
 #----- Load Sway conf files

@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # shellcheck disable=1091,2034
-source /usr/local/bin/userenv
-source "$BASH_LIB/sway/wobctl.sh"
+
+source /usr/local/bin/userenv export_env BASH_LIB
+source "${BASH_LIB}/sway/wobctl.sh"
 
 # https://blog.bootkit.dev/post/nix-extravaganza-thinkpad-t14-gen5-amd/
 LED_BRIGHTNESS="/sys/class/leds/platform::micmute/brightness"

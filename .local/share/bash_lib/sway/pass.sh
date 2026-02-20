@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-_pass() {
+pass() {
   case "${1:-''}" in
     --clear) 
       if pgrep keypassxc; then
@@ -18,5 +18,5 @@ _pass() {
 }
 
 if [[ "${#BASH_SOURCE[@]}" -eq 1 ]]; then
-  _pass
+  pass
 fi

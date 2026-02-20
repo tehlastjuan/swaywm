@@ -6,7 +6,7 @@
 # * set the scaling for your screen: output HDMI1 scale 2
 
 output "Lenovo Group Limited 0x403A Unknown" {
-  position 1400,1310
+  position 1400,1330
   mode 1920x1200@60Hz
   scale 1.25
   alias $LAPTOP
@@ -29,4 +29,5 @@ profile laptop {
   output $VERTICAL disable
   output $WIDE disable
   output $LAPTOP enable position 0,0
+  exec swaymsg workspace "$CURR_WORKSPACE"
 }

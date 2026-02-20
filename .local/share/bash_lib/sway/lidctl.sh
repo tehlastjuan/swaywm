@@ -24,30 +24,30 @@ read_flags() {
 }
 
 check_flags() {
-  case "$1" in
+  case "${1-}" in
     ALLOW_SLEEP)
-      read_flags
-      return "${FLAGS[ALLOW_SLEEP]}"
+      read_flags && return "${FLAGS[ALLOW_SLEEP]}"
     ;;
     ALLOW_HIBERNATE)
-      read_flags
-      return "${FLAGS[ALLOW_HIBERNATE]}"
+      read_flags && return "${FLAGS[ALLOW_HIBERNATE]}"
     ;;
     *) return 1 ;;
   esac
 }
 
 notify_flags() {
-  case "${1:-''}" in
+  case "${1-}" in
     ALLOW_SLEEP)
-      if [ "$2" -eq 0 ]; then
+      shift
+      if [ "${1:-0}" -eq 0 ]; then
         notify-send "ALLOW_SLEEP true"
       else
         notify-send "ALLOW_SLEEP false"
       fi
       ;;
     ALLOW_HIBERNATE)
-      if [ "$2" -eq 0 ]; then
+      shift
+      if [ "${1:-0}" -eq 0 ]; then
         notify-send "ALLOW_HIBERNATE true"
       else
         notify-send "ALLOW_HIBERNATE false"
@@ -59,17 +59,19 @@ notify_flags() {
 
 set_flags() {
   [ $# -lt 2 ] && return 1 
-  case "${1:-''}" in
+  case "${1-}" in
     ALLOW_SLEEP)
+      shift
       read_flags
-      FLAGS[ALLOW_SLEEP]=$2
-      notify_flags ALLOW_SLEEP "$2"
+      FLAGS[ALLOW_SLEEP]=$1
+      notify_flags ALLOW_SLEEP "$1"
       write_flags
       ;;
     ALLOW_HIBERNATE)
+      shift
       read_flags
-      FLAGS[ALLOW_HIBERNATE]=$2
-      notify_flags ALLOW_HIBERNATE "$2"
+      FLAGS[ALLOW_HIBERNATE]=$1
+      notify_flags ALLOW_HIBERNATE "$1"
       write_flags
       ;;
     *) return 1 ;;
@@ -88,11 +90,12 @@ EOF
 }
 
 _lidctl() {
-  case "${1:-''}" in
-    --allow-sleep|-s)
-      case "${2:-''}" in
-        yes)     set_flags ALLOW_SLEEP 0 ;;
-        no)      set_flags ALLOW_SLEEP 1 ;;
+  case "${1-}" in
+    -s|--allow-sleep)
+      shift
+      case "${1-}" in
+        yes) set_flags ALLOW_SLEEP 0 ;;
+        no) set_flags ALLOW_SLEEP 1 ;;
         toggle)
           if check_flags ALLOW_SLEEP; then
             set_flags ALLOW_SLEEP 1
@@ -103,10 +106,11 @@ _lidctl() {
         *) _prt_flags ;;
       esac
     ;;
-    --allow-hibernate|-h)
-      case "${2:-''}" in
-        yes)     set_flags ALLOW_HIBERNATE 0 ;;
-        no)      set_flags ALLOW_HIBERNATE 1 ;;
+    -h|--allow-hibernate)
+      shift
+      case "${1-}" in
+        yes) set_flags ALLOW_HIBERNATE 0 ;;
+        no) set_flags ALLOW_HIBERNATE 1 ;;
         toggle)
           if check_flags ALLOW_HIBERNATE; then
             set_flags ALLOW_HIBERNATE 1

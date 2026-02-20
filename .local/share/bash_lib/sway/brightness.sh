@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # shellcheck disable=1091,2034
-source /usr/local/bin/userenv
+
+source /usr/local/bin/userenv export_env BASH_LIB
 source "$BASH_LIB/sway/wobctl.sh"
 
 CURRENT_ABS=$(brightnessctl get)

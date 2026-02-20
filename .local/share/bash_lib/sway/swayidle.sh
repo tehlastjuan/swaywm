@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-source /usr/local/bin/userenv
+
+source /usr/local/bin/userenv export_env BASH_LIB
 
 set -euo pipefail
 
@@ -10,6 +11,7 @@ _swayidle() {
   local sleep_timeout=900
 
   if pgrep swayidle; then pkill -x swayidle; fi
+  if pgrep swaylock; then pkill -x swaylock; fi
 
   swayidle -w \
     timeout "$idle_timeout" 'brightnessctl -s && brightnessctl set 30%', resume 'brightnessctl -r' \

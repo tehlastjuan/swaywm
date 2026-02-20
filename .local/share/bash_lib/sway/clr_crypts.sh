@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+
 . /usr/local/bin/userenv
 
 # clear empty crypt files

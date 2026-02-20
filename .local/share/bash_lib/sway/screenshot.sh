@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 source /usr/local/bin/userenv
 
 set -euo pipefail

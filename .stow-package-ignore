@@ -12,6 +12,7 @@
 # .config/qt5ct
 # .config/qt6ct
 # .config/sway
+.config/sway_launcher
 .config/swayidle
 .config/waybar
 .config/way-displays
