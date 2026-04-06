@@ -41,8 +41,17 @@ set {
 
 set {
 
+  # reload
+  $swayreload $sway_lib/swayreload.sh
+
+  # overfocus
+  $overfocus $local_lib/sway-overfocus
+
   # once-script
   $once $sway_lib/once.sh
+
+  # notifications
+  $notify exec notify-send $1
 
   # Terminal emulator
   $term footclient
@@ -112,13 +121,16 @@ set {
   $brightness_down $sway_lib/brightness.sh --down
 
   # scaling
-  $scale_up /usr/share/sway/scripts/scale.sh up
-  $scale_down /usr/share/sway/scripts/scale.sh down
-  $scale_default /usr/share/sway/scripts/scale.sh default
+  # $scale_up /usr/share/sway/scripts/scale.sh up
+  # $scale_down /usr/share/sway/scripts/scale.sh down
+  # $scale_default /usr/share/sway/scripts/scale.sh default
+  $scale_up $sway_lib/swaymonitors.sh --scale up
+  $scale_down $sway_lib/swaymonitors.sh --scale down
+  $scale_default $sway_lib/swaymonitors.sh --scale default
 
   # audio control
   $volume_up $sway_lib/mediactl.sh --sink up
-  $volume_down $sway_lib/mediactl.sh --sink down 
+  $volume_down $sway_lib/mediactl.sh --sink down
   $volume_mute $sway_lib/mediactl.sh --sink toggle
   $volume_mute_init $sway_lib/mediactl.sh --sink mute
 
@@ -146,6 +158,7 @@ set {
 }
 
 # hide cursor after 5 seconds of inactivty
+seat seat0 xcursor_theme breeze-cursors
 seat seat0 hide_cursor 5000
 
 
@@ -163,6 +176,9 @@ set {
   # Waybar killer / runner
   $kill_waybar $sway_lib/waybar.sh
 }
+
+set $monitor_lptp "Lenovo Group Limited 0x403A Unknown"
+output eDP-1 mode 1920x1200@60Hz pos 0 0 scale 1.13
 
 # Window borders
 gaps outer 0

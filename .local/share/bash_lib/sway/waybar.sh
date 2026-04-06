@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source /usr/local/bin/userenv export_env DOT_FILES
+source /usr/local/bin/userenv --
 
 pkill -U "$_USER" -x waybar
 

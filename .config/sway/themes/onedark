@@ -1,9 +1,9 @@
 # Global theme variables
-set $kvantum-theme midnight 
+set $kvantum-theme midnight
 set $gtk-theme Matcha-dark-aliz
 set $gtk-color-scheme prefer-dark
 set $icon-theme Papirus-Dark-Maia
-set $cursor-theme xcursor-breeze
+set $cursor-theme breeze-cursors
 set $term-font IosevkaCustom Nerd Font 11.25
 set $gui-font Roboto 10
 

@@ -1,22 +1,26 @@
 #!/usr/bin/env bash
 
 pass() {
-  case "${1:-''}" in
-    --clear) 
-      if pgrep keypassxc; then
-        pkill keypassxc
+  case "${1-}" in
+    --clear)
+      if pgrep keepassxc; then
+        pkill keepassxc
       fi
     ;;
     *)
       if pgrep keepassxc; then
         swaymsg '[app_id="org.keepassxc.KeePassXC"]' focus
       else
-        keepassxc
+        if [[ "${#BASH_SOURCE[@]}" -eq 1 ]]; then
+          keepassxc
+        else
+          nohup keepassxc &> /dev/null &
+        fi
       fi
     ;;
   esac
 }
 
 if [[ "${#BASH_SOURCE[@]}" -eq 1 ]]; then
-  pass
+  pass "$@"
 fi

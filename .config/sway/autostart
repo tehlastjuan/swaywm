@@ -1,11 +1,13 @@
 #----- units
 
 set $initialize_foot_server '[ -x "$(command -v foot)" ] && systemctl --now --user enable foot-server.socket && systemctl --now --user enable foot-server'
-set $initialize_idlehack_service '[ -x "$(command -v idlehack)" ] && systemctl --now --user enable idlehack'
+set $initialize_mako_service '[ -x "$(command -v mako)" ] && systemctl --now --user enable mako'
 set $initialize_mounting_service '[ -x "$(command -v pcmanfm)" ] && systemctl --now --user enable pcmanfm-qt -d'
 set $initialize_poweralert_service '[ -x "$(command -v poweralertd)" ] && systemctl --now --user enable poweralertd'
-set $initialize_mako_service '[ -x "$(command -v mako)" ] && systemctl --now --user enable mako'
+# set $initialize_way_displays 'way-displays > /tmp/way-displays.${USER}.log 2>&1'
 # set $initialize_way_displays '[ -x "$(command -v way-displays)" ] && systemctl --now --user enable way-displays'
+# set $initialize_idlehack_service '[ -x "$(command -v idlehack)" ] && systemctl --now --user enable idlehack'
+# set $initialize_swayidle_service '[ -x "$(command -v swayidle)" ] && systemctl --now --user enable swayidle'
 # set $initialize_swayr_service '[ -x "$(command -v swayrd)" ] && systemctl --now --user enable swayrd'
 
 

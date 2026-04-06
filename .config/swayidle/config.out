@@ -1,0 +1,11 @@
+timeout 240 "brightnessctl -s && brightnessctl set 30%-", resume 'brightnessctl -r'
+
+timeout 300 "if ! pgrep 'swaylock'; then ${BASH_LIB}/sway/swaylock.sh && sleep 2; fi"
+
+timeout 420 'swaymsg "output * dpms off"', resume 'swaymsg "output * dpms on"'
+
+timeout 900 'swaymsg "output * dpms off"; if ! pgrep 'swaylock'; then ${BASH_LIB}/sway/swaylock.sh && sleep 2; fi'
+
+before-sleep "if ! pgrep 'swaylock'; then ${BASH_LIB}/sway/swaylock.sh && sleep 2; fi"
+
+after-resume 'swaymsg "output * dpms on" && brightnessctl -r'

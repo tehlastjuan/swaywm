@@ -78,7 +78,7 @@ set_flags() {
   esac
 }
 
-_prt_flags() {
+prt_flags() {
   read_flags
   cat << EOF
 ALLOW_SLEEP=${FLAGS[ALLOW_SLEEP]}
@@ -89,23 +89,9 @@ usage: lidctl [FLAG] [yes|no]
 EOF
 }
 
-_lidctl() {
+lidctl() {
   case "${1-}" in
-    -s|--allow-sleep)
-      shift
-      case "${1-}" in
-        yes) set_flags ALLOW_SLEEP 0 ;;
-        no) set_flags ALLOW_SLEEP 1 ;;
-        toggle)
-          if check_flags ALLOW_SLEEP; then
-            set_flags ALLOW_SLEEP 1
-          else
-            set_flags ALLOW_SLEEP 0
-          fi
-        ;;
-        *) _prt_flags ;;
-      esac
-    ;;
+    -p|--print) prt_flags ;;
     -h|--allow-hibernate)
       shift
       case "${1-}" in
@@ -118,13 +104,25 @@ _lidctl() {
             set_flags ALLOW_HIBERNATE 0
           fi
         ;;
-        *) _prt_flags ;;
+        *) return 1 ;;
       esac
-    ;;
-    *) _prt_flags ;;
+      ;;
+    -s|--allow-sleep)
+      shift
+      case "${1-}" in
+        yes) set_flags ALLOW_SLEEP 0 ;;
+        no) set_flags ALLOW_SLEEP 1 ;;
+        toggle)
+          if check_flags ALLOW_SLEEP; then
+            set_flags ALLOW_SLEEP 1
+          else
+            set_flags ALLOW_SLEEP 0
+          fi
+        ;;
+        *) return 1 ;;
+      esac
+      ;;
   esac
 }
 
-if [[ "${#BASH_SOURCE[@]}" -eq 1 ]]; then
-  _lidctl "$@"
-fi
+lidctl "$@"

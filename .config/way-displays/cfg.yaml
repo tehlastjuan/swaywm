@@ -1,29 +1,46 @@
+---
+
 ARRANGE: ROW
 ALIGN: TOP
+
 ORDER:
-  - '!.*Dell Inc. DELL U2421HE 4TGZX13'
-  - '!.*LG Electronics LG ULTRAWIDE 0x000029C2'
-  - 'AU Optronics 0x9EA9 Unknown'
-SCALING: false
-AUTO_SCALE: false
+  - '^Dell Inc. DELL U2421HE 4TGZX13'
+  - '^LG Electronics LG ULTRAWIDE 0x000029C2'
+  - 'eDP-1'
+  # - 'Lenovo Group Limited 0x403A Unknown'
+  # - 'AU Optronics 0x9EA9 Unknown'
+
+SCALING: true
+
+AUTO_SCALE: true
 AUTO_SCALE_MIN: 1
-AUTO_SCALE_MAX: 1
+AUTO_SCALE_MAX: 3
+
 SCALE:
-  - NAME_DESC: 'AU Optronics 0x9EA9 Unknown'
-    SCALE: 1
+  # - NAME_DESC: 'Lenovo Group Limited 0x403A Unknown'
+  - NAME_DESC: 'eDP-1'
+    SCALE: 1.13
+  # - NAME_DESC: 'AU Optronics 0x9EA9 Unknown'
+  #   SCALE: 1
   - NAME_DESC: 'LG Electronics LG ULTRAWIDE 0x000029C2'
     SCALE: 1
   - NAME_DESC: 'Dell Inc. DELL U2421HE 4TGZX13'
     SCALE: 1
+
 MODE:
   - NAME_DESC: 'LG Electronics LG ULTRAWIDE 0x000029C2'
     WIDTH: 2560
     HEIGHT: 1080
     HZ: 100
+
 TRANSFORM:
   - NAME_DESC: 'Dell Inc. DELL U2421HE 4TGZX13'
     TRANSFORM: 270
-VRR_OFF:
-  - 'LG Electronics LG ULTRAWIDE 0x000029C2'
-  - 'Dell Inc. DELL U2421HE 4TGZX13'
+
+# VRR_OFF:
+#   - 'LG Electronics LG ULTRAWIDE 0x000029C2'
+#   - 'Dell Inc. DELL U2421HE 4TGZX13'
+
+CALLBACK_CMD: notify-send "way-displays ${CALLBACK_LEVEL}" "${CALLBACK_MSG}"
+
 LOG_THRESHOLD: DEBUG
