@@ -6,7 +6,7 @@
 # .config/fontconfig
 # .config/foot
 # .config/gtk-3.0
-# .config/kanshi
+.config/kanshi
 .config/kvantum_themes
 # .config/mako
 # .config/qt5ct

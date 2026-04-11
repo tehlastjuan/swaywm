@@ -5,7 +5,7 @@ source /usr/local/bin/userenv --
 source "${BASH_LIB}/utils/ulaptop"
 source "${BASH_LIB}/sway/workspaces.sh"
 
-set -x
+# set -x
 
 declare MONITOR_CONF="$DOT_FILES/sway/.config/sway/outputs/outputs.conf"
 
@@ -22,22 +22,23 @@ declare -A CURR_OUTPUTS_CFG
 declare -A ACTIVE_OUTPUTS
 declare -A ACTIVE_OUTPUTS_CFG
 
+# pos 0 0, scale 1.0, transform 90
 declare -A PROFILE_DEFAULT
 PROFILE_DEFAULT[VERT]="disable"
 PROFILE_DEFAULT[WIDE]="disable"
-PROFILE_DEFAULT[LPTP]="pos 0 0,scale 1.13"
+PROFILE_DEFAULT[LPTP]="0 0,1.13"
 
 declare -A PROFILE_DOCKED
-PROFILE_DOCKED[VERT]="pos 0 0,scale 1,transform 90"
-PROFILE_DOCKED[WIDE]="pos 1080 0,scale 1"
+PROFILE_DOCKED[VERT]="0 0,1.0,90"
+PROFILE_DOCKED[WIDE]="1080 0,1.0"
 PROFILE_DOCKED[LPTP]="disable"
 
 declare -A PROFILE_MULTI
-PROFILE_MULTI[VERT]="pos 0 0,scale 1,transform 90"
-PROFILE_MULTI[WIDE]="pos 1080 0,scale 1"
-PROFILE_MULTI[LPTP]="pos 3640 0,scale 1.13"
-PROFILE_MULTI[TELE]="pos 5560 0,scale 2"
-PROFILE_MULTI[KAUS]="pos 5560 0,scale 2"
+PROFILE_MULTI[VERT]="0 0,1.0,90"
+PROFILE_MULTI[WIDE]="1080 0,1.0"
+PROFILE_MULTI[LPTP]="3640 0,1.13"
+PROFILE_MULTI[TELE]="5560 0,2.0"
+PROFILE_MULTI[KAUS]="5560 0,2.0"
 
 declare -n PROFILE
 
@@ -54,9 +55,10 @@ init() {
   # done
 
   for output in "${!CURR_OUTPUTS[@]}"; do
-    while IFS=',' read -r name monitor_name width height res scale; do
-      CURR_OUTPUTS_CFG["$name"]="${monitor_name},${width}x${height}@${res::2}Hz,${scale}"
-    done<<<"$(get_output_config "$output")"
+    while IFS=',' read -r key monitor_name width height res scale transform; do
+      [ "$transform" = "null" ] || [ "$transform" = "normal" ] && transform=0
+      CURR_OUTPUTS_CFG["$key"]="${monitor_name},${width},${height},${res},${scale},${transform}"
+    done<<<"$(get_output "$output" --config)"
   done
 
   # for name in "${!CURR_OUTPUTS_CFG[@]}"; do
@@ -69,9 +71,10 @@ init() {
 
   #TODO: add ACTIVE_OUTPUTS_CFG setup
   for output in "${!ACTIVE_OUTPUTS[@]}"; do
-    while IFS=',' read -r key monitor_name width height res scale; do
-      ACTIVE_OUTPUTS_CFG["$key"]="${monitor_name},${width}x${height}@${res::2}Hz,${scale}"
-    done<<<"$(get_output_config "$output")"
+    while IFS=',' read -r key monitor_name width height res scale transform; do
+      [ "$transform" = "null" ] || [ "$transform" = "normal" ] && transform=0
+      ACTIVE_OUTPUTS_CFG["$key"]="${monitor_name},${width},${height},${res},${scale},${transform}"
+    done<<<"$(get_output "$output" --config)"
   done
 
   # for key in "${!ACTIVE_OUTPUTS_CFG[@]}"; do
@@ -159,8 +162,6 @@ disable_output() {
 set_focus() {
   local output_name=
   output_name="$(get_active_output_name_from_key "${1-}")"
-  #printf -v output_name '%s' "$(get_active_output_name_from_key "${1-}")"
-  #echo "set_focus_pre: $output_name"
   [ -z "$output_name" ] && output_name=$(get_outputs_focused --key)
   swaymsg focus output \'"$output_name"\'
 }
@@ -172,34 +173,55 @@ delete_config() {
 }
 
 set_config() {
-  local key
-  local -a conf=()
+  local key=
+  local -a output_alias=()
   for output in "${!CURR_OUTPUTS[@]}"; do
-    key="$(get_output_key "${CURR_OUTPUTS[$output]}")"
-    conf+=("set \$monitor_${key,,} \"${CURR_OUTPUTS[$output]}\"")
+    printf "CURR: %s\n" "${CURR_OUTPUTS_CFG[$output]}"
 
-    local -a tmp_conf=("output $output")
-    if [ "${PROFILE[$key]}" == "disable" ]; then
-      tmp_conf+=("${PROFILE[$key]}")
+    key="$(get_output_key "${CURR_OUTPUTS[$output]}")"
+    output_alias+=("set \$monitor_${key,,} \"${CURR_OUTPUTS[$output]}\"")
+
+    local -a output_config=("output $output")
+
+    if [ "${PROFILE[$key]}" = "disable" ]; then
+      output_config+=("${PROFILE[$key]}")
     else
-      while IFS=',' read -r _ mode scale; do
-        [ -n "$mode" ] && tmp_conf+=("mode ${mode}")
-        [ -n "$scale" ] && tmp_conf+=("scale ${scale}")
+      local -i width height res transform
+      local scale="1.0"
+
+      while IFS=',' read -r _monitor_name _width _height _res _scale _transform; do
+        [ -n "$_width" ] && width=$_width
+        [ -n "$_height" ] && height=$_height
+        [ -n "$_res" ] && res=$_res
+        [ -n "$_scale" ] && scale=$_scale
+        [ -n "$_transform" ] && transform=$_transform
       done<<<"${CURR_OUTPUTS_CFG[$output]}"
-      while IFS=',' read -r pos scale transform; do
-        [ -n "${pos}" ] && tmp_conf+=("${pos}")
-        #[ -n "${scale}" ] && tmp_conf+=("${scale}")
-        [ -n "${transform}" ] && tmp_conf+=("${transform}")
+
+      while IFS=',' read -r _pos _scale _transform _res; do
+        if [ -n "$_scale" ] && [ "$(bc -l <<< "${scale}!=${_scale}")" ]
+        then scale=$_scale; fi
+        if [ -n "$_transform" ] && [ "$(bc -l <<< "${transform}!=${_transform}")" ]
+        then transform=$_transform; fi
+        if [ -n "$_res" ] && [ "$(bc -l <<< "${res}!=${_res}")" ]
+        then res=$_res; fi
+
+        [ -n "$width" ] && [ -n "$height" ] && [ -n "$res" ] && {
+          output_config+=("mode ${width}x${height}@${res::2}Hz")
+        }
+        [ -n "$_pos" ] && output_config+=("pos ${_pos}")
+        [ -n "$scale" ] && output_config+=("scale ${scale}")
+        [ -n "$transform" ] && output_config+=("transform ${transform}")
       done<<<"${PROFILE[$key]}"
     fi
 
-    #ACTIVE_OUTPUTS_CFG["$output"]="${tmp_conf[*]}"
-    conf+=("${tmp_conf[*]}")
-    swaymsg "${tmp_conf[*]}" # enable
+    # enable output config in sway
+    swaymsg "${output_config[*]}"
+    printf "CONF: %s\n" "${output_config[*]}"
   done
 
+  # store output alias to sway config (for easy keymapping)
   delete_config
-  #printf "%s\n" "${conf[@]}" > "$MONITOR_CONF"
+  printf "%s\n" "${output_alias[@]}" > "$MONITOR_CONF"
 }
 
 get_output_profile() {
@@ -301,6 +323,6 @@ swaymonitors() {
   esac
 }
 
-if [[ "${#BASH_SOURCE[@]}" -eq 1 ]]; then
+if [ "${#BASH_SOURCE[@]}" -eq 1 ]; then
   swaymonitors "$@"
 fi
