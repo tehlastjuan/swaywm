@@ -4,6 +4,7 @@ set $initialize_foot_server '[ -x "$(command -v foot)" ] && systemctl --now --us
 set $initialize_mako_service '[ -x "$(command -v mako)" ] && systemctl --now --user enable mako'
 set $initialize_mounting_service '[ -x "$(command -v pcmanfm)" ] && systemctl --now --user enable pcmanfm-qt -d'
 set $initialize_poweralert_service '[ -x "$(command -v poweralertd)" ] && systemctl --now --user enable poweralertd'
+
 # set $initialize_way_displays 'way-displays > /tmp/way-displays.${USER}.log 2>&1'
 # set $initialize_way_displays '[ -x "$(command -v way-displays)" ] && systemctl --now --user enable way-displays'
 # set $initialize_idlehack_service '[ -x "$(command -v idlehack)" ] && systemctl --now --user enable idlehack'
@@ -13,14 +14,14 @@ set $initialize_poweralert_service '[ -x "$(command -v poweralertd)" ] && system
 
 #----- autostarts
 
-set $xdg-dirs '[ -x "$(command -v xdg-user-dirs-update)" ] && exec xdg-user-dirs-update'
-set $autostart_dex '[ -x "$(command -v dex)" ] && gdbus wait --session org.kde.StatusNotifierWatcher && dex -a -e SWAY'
-set $autotiling '[ -x "$(command -v autotiling)" ] && autotiling'
-set $auto_xdg_keyboard 'grep -q xkb_layout ~/.config/sway/inputs/inputs.conf || /usr/share/sway/scripts/keyboard.sh'
-set $enable_noisetorch '[ -x "$(command -v noisetorch)" ] && noisetorch -u && noisetorch -i'
+set $start_xdg-dirs '[ -x "$(command -v xdg-user-dirs-update)" ] && exec xdg-user-dirs-update'
+set $start_xdg_keyboard 'grep -q xkb_layout ~/.config/sway/inputs/inputs.conf || /usr/share/sway/scripts/keyboard.sh'
+set $start_autotiling '[ -x "$(command -v autotiling)" ] && autotiling'
+set $start_noisetorch '[ -x "$(command -v noisetorch)" ] && noisetorch -u && noisetorch -i'
+# set $start_dex '[ -x "$(command -v dex)" ] && gdbus wait --session org.kde.StatusNotifierWatcher && dex -a -e SWAY'
 
 
 #----- daemons
 
-set $swappy_notify '[ -x "$(command -v swappy)" ] && $bash_lib/sway/screenshot.sh'
+set $swappy_notify_daemon '[ -x "$(command -v swappy)" ] && $bash_lib/sway/screenshot.sh'
 set $calendar_daemon 'calcurse --daemon'

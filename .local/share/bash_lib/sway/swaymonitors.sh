@@ -169,15 +169,14 @@ set_focus() {
 #----- config
 
 delete_config() {
-  [ -f "$MONITOR_CONF" ] && rm "$MONITOR_CONF"
+  if [ -f "$MONITOR_CONF" ]; then rm "$MONITOR_CONF"; fi
+  return
 }
 
 set_config() {
   local key=
   local -a output_alias=()
   for output in "${!CURR_OUTPUTS[@]}"; do
-    printf "CURR: %s\n" "${CURR_OUTPUTS_CFG[$output]}"
-
     key="$(get_output_key "${CURR_OUTPUTS[$output]}")"
     output_alias+=("set \$monitor_${key,,} \"${CURR_OUTPUTS[$output]}\"")
 
@@ -216,7 +215,6 @@ set_config() {
 
     # enable output config in sway
     swaymsg "${output_config[*]}"
-    printf "CONF: %s\n" "${output_config[*]}"
   done
 
   # store output alias to sway config (for easy keymapping)
