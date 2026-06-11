@@ -2,16 +2,14 @@
 # shellcheck disable=1091,2034
 
 source /usr/local/bin/userenv --
-source "$BASH_LIB/sway/wobctl.sh"
+source "${BASH_LIB}/sway/wobctl.sh"
 
 FACTOR=2
-CURRENT_ABS=$(brightnessctl get)
-MAX=$(brightnessctl max)
-BRIGHTNESS_STEP=$((MAX * FACTOR / 100 < 1 ? 1 : MAX * FACTOR / 100))
 
-current_brightness() {
-  echo "$(brightnessctl get) * 100 / $(brightnessctl max)" | bc
-}
+MAX=$(brightnessctl max)
+CURRENT_ABS=$(brightnessctl get)
+BRIGHTNESS_STEP=$((MAX * FACTOR / 100 < 1 ? 1 : MAX * FACTOR / 100))
+CURRENT_BRIGHTNESS=$(printf '%s' "$( "$(brightnessctl get) * 100 / $(brightnessctl max)" | bc) )" )
 
 # kill_brightness() {
 #   kill "$(ps aux | grep 'brightness.sh --*' | awk '{print $2}')"
@@ -30,17 +28,17 @@ brightness() {
         brightnessctl --quiet set 1
       else
         brightnessctl --quiet set "${BRIGHTNESS_STEP}-"
-        wobctl --show "$(current_brightness)"
+        wobctl --show "$CURRENT_BRIGHTNESS"
       fi
     ;;
     --up)
       brightnessctl --quiet set "${BRIGHTNESS_STEP}+"
-      wobctl --show "$(current_brightness)"
+      wobctl --show "$CURRENT_BRIGHTNESS"
       ;;
     *) exit 0 ;;
   esac
 }
 
-if [[ "${#BASH_SOURCE[@]}" -eq 1 ]]; then
+if [ "${#BASH_SOURCE[@]}" -eq 1 ]; then
   brightness "$@"
 fi

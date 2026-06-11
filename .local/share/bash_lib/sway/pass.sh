@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-pass() {
+function pass() {
+  if ! command -v keepassxc &> /dev/null; then return 1; fi
+
   case "${1-}" in
     --clear)
       if pgrep keepassxc; then
@@ -11,16 +13,12 @@ pass() {
       if pgrep keepassxc; then
         swaymsg '[app_id="org.keepassxc.KeePassXC"]' focus
       else
-        if [[ "${#BASH_SOURCE[@]}" -eq 1 ]]; then
-          keepassxc
-        else
-          nohup keepassxc &> /dev/null &
-        fi
+        nohup keepassxc &> /dev/null &
       fi
     ;;
   esac
 }
 
-if [[ "${#BASH_SOURCE[@]}" -eq 1 ]]; then
+if [ "${#BASH_SOURCE[@]}" -eq 1 ]; then
   pass "$@"
 fi

@@ -1,9 +1,17 @@
 #----- units
 
+# set $initialize_foot_server '[ -x "$(command -v foot)" ] && (systemctl --user start foot-server.socket; systemctl --user start foot-server)'
+# set $initialize_swayr_daemon '[ -x "$(command -v swayrd)" ] && systemctl --user start swayrd'
+# set $initialize_poweralert_daemon '[ -x "$(command -v poweralertd)" ] && systemctl --user start poweralertd'
+# set $initialize_calendar_daemon '[ -x "$(command -v calcurse)" ] && systemctl --user start calcurse-daemon'
+# set $initialize_polkit_agent '[ -x /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 ] && systemctl --user start polkit-gnome'
+# set $initialize_mako '[ -x "$(command -v mako)" ] && systemctl --user set-environment MAKO_FONT="$term-font" MAKO_TEXT_COLOR="$text-color" MAKO_BORDER_COLOR="$accent-color" MAKO_BG_COLOR="$background-color" && systemctl --user reload-or-restart mako'
+
 set $initialize_foot_server '[ -x "$(command -v foot)" ] && systemctl --now --user enable foot-server.socket && systemctl --now --user enable foot-server'
 set $initialize_mako_service '[ -x "$(command -v mako)" ] && systemctl --now --user enable mako'
 set $initialize_mounting_service '[ -x "$(command -v pcmanfm)" ] && systemctl --now --user enable pcmanfm-qt -d'
 set $initialize_poweralert_service '[ -x "$(command -v poweralertd)" ] && systemctl --now --user enable poweralertd'
+
 
 # set $initialize_way_displays 'way-displays > /tmp/way-displays.${USER}.log 2>&1'
 # set $initialize_way_displays '[ -x "$(command -v way-displays)" ] && systemctl --now --user enable way-displays'

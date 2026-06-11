@@ -91,12 +91,18 @@ EOF
 
 lidctl() {
   case "${1-}" in
-    -p|--print) prt_flags ;;
-    -h|--allow-hibernate)
+    -h|--help)
+      prt_flags
+      ;;
+    -i|--allow-hibernate)
       shift
       case "${1-}" in
-        yes) set_flags ALLOW_HIBERNATE 0 ;;
-        no) set_flags ALLOW_HIBERNATE 1 ;;
+        yes)
+          set_flags ALLOW_HIBERNATE 0
+          ;;
+        no)
+          set_flags ALLOW_HIBERNATE 1
+          ;;
         toggle)
           if check_flags ALLOW_HIBERNATE; then
             set_flags ALLOW_HIBERNATE 1
@@ -110,8 +116,12 @@ lidctl() {
     -s|--allow-sleep)
       shift
       case "${1-}" in
-        yes) set_flags ALLOW_SLEEP 0 ;;
-        no) set_flags ALLOW_SLEEP 1 ;;
+        yes)
+          set_flags ALLOW_SLEEP 0
+          ;;
+        no)
+          set_flags ALLOW_SLEEP 1
+          ;;
         toggle)
           if check_flags ALLOW_SLEEP; then
             set_flags ALLOW_SLEEP 1
@@ -125,4 +135,6 @@ lidctl() {
   esac
 }
 
-lidctl "$@"
+if [ "${#BASH_SOURCE[@]}" -eq 1 ]; then
+  lidctl "$@"
+fi

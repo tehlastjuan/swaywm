@@ -66,8 +66,8 @@ if ! export -p | grep -q BASH_LIB=; then
   export BASH_LIB="$XDG_DATA_HOME/bash_lib"
 fi
 
-if ! export -p | grep -q DOT_FILES=; then
-  export DOT_FILES="${_HOME}/.dotfiles"
+if ! export -p | grep -q DOTFILES=; then
+  export DOTFILES="${_HOME}/.dotfiles"
 fi
 
 if ! export -p | grep -q VMS_CACHE=; then
@@ -101,7 +101,7 @@ get_env() {
     WAYLAND_DISPLAY)  echo "WAYLAND_DISPLAY=$WAYLAND_DISPLAY" ;;
     SWAYSOCK)         echo "SWAYSOCK=$SWAYSOCK" ;;
     BASH_LIB)         echo "BASH_LIB=$BASH_LIB" ;;
-    DOT_FILES)        echo "DOT_FILES=$DOT_FILES" ;;
+    DOTFILES)        echo "DOTFILES=$DOTFILES" ;;
     VMS_CACHE)        echo "VMS_CACHE=$VMS_CACHE" ;;
     ISO_DOWNLOADS)    echo "ISO_DOWNLOADS=$ISO_DOWNLOADS" ;;
     CRYPTS_CACHE)     echo "CRYPTS_CACHE=$CRYPTS_CACHE" ;;
@@ -120,7 +120,7 @@ DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS
 WAYLAND_DISPLAY=$WAYLAND_DISPLAY
 SWAYSOCK=$SWAYSOCK
 BASH_LIB=$BASH_LIB
-DOT_FILES=$DOT_FILES
+DOTFILES=$DOTFILES
 VMS_CACHE=$VMS_CACHE
 ISO_DOWNLOADS=$ISO_DOWNLOADS
 CRYPTS_CACHE=$CRYPTS_CACHE

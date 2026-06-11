@@ -1,12 +1,11 @@
 #!/usr/bin/env sh
 
-. /usr/local/bin/userenv
+[ -z "${3-}" ] && exit 1
 
-[ -z "$3" ] && exit 1
+LOCKFILE="/tmp/${3}.lock"
 
-LOCKFILE="$XDG_STATE_HOME/${3}.lock"
-
-# Kills the process if it's already running
-lsof -Fp "$LOCKFILE" | sed 's/^p//' | xargs -r kill
+if [ -f "$LOCKFILE" ]; then exit 0; fi
 
 flock --verbose -n "$LOCKFILE" "$@"
+
+if [ -f "$LOCKFILE" ]; then rm -f "$LOCKFILE"; fi

@@ -6,7 +6,7 @@ declare -a OUTPUT_OPT=()
 declare -a INPUTS_CMD=()
 
 __get_inputs() {
-  swaymsg -t get_inputs --raw | jq -r "[ .[] |
+  swaymsg -t get_inputs --raw | jq -c "[ .[] |
     {
       id: ( \"\(.vendor):\(.product)\" ),
       identifier,
@@ -133,6 +133,16 @@ format_output() {
   OUTPUT_OPT+=("$(printf '%s' "${_cmd[@]}")")
 }
 
+prt_usage() {
+  cat << EOT
+usage: swayinputs.sh [ARGS]
+       swayinputs.sh [-o|--output]  =: format output w/ field names
+       swayinputs.sh [-t|--type]    =: filter inputs by type (keyboard, pointer...)
+       swayinputs.sh [-i|--id]      =: filter inputs by id (vendor:product)
+       swayinputs.sh [-g|--grep]    =: match expression
+EOT
+}
+
 run_cmd() {
   init_inputs_cmd
 
@@ -149,14 +159,24 @@ run_cmd() {
 }
 
 swayinputs() {
-  # __get_inputs
-  # return
-
+  [ $# -eq 0 ] && return
   while true; do
     [ $# -eq 0 ] && break
     case "${1-}" in
       --)
+        shift
         break
+        ;;
+      -g|--grep)
+        shift
+        get_inputs_grep "$@"
+        ;;
+      -h|--help)
+        prt_usage && exit 0
+        ;;
+      -i|--id)
+        shift
+        get_inputs_id "$@"
         ;;
       -o|--output)
         shift
@@ -166,16 +186,10 @@ swayinputs() {
         shift
         get_inputs_type "$@"
         ;;
-      --id)
+      *)
         shift
-        get_inputs_id "$@"
-        ;;
-      -g|--grep)
-        shift
-        get_inputs_grep "$@"
         ;;
     esac
-    shift
   done
 
   #run_cmd
