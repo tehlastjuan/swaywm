@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 waylock -fork-on-lock \
-  -init-color 0x1e222a \
-  -input-color 0x1e222a \
-  -fail-color 0xe06c75
+    -init-color 0x1e222a \
+    -input-color 0x2d3343 \
+    -fail-color 0xe06c75
 
 
 #logger "swaylock.sh: $(pgrep 'swaylock')"

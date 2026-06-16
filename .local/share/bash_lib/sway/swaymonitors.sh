@@ -7,7 +7,10 @@ source "${BASH_LIB}/sway/workspaces.sh"
 
 # set -x
 
-declare MONITOR_CONF="$DOT_FILES/sway/.config/sway/outputs/outputs.conf"
+declare MONITOR_CONF="$DOTFILES/sway/.config/sway/outputs/outputs.conf"
+
+declare -i REFRESH=60
+#declare -i REFRESH=99
 
 declare -A OUTPUTS_KEY_MODEL
 OUTPUTS_KEY_MODEL[LPTP]="Lenovo Group Limited 0x403A Unknown"
@@ -22,7 +25,7 @@ declare -A CURR_OUTPUTS_CFG
 declare -A ACTIVE_OUTPUTS
 declare -A ACTIVE_OUTPUTS_CFG
 
-# pos 0 0, scale 1.0, transform 90
+# pos 0 0, scale 1.0, transform 90, res 60
 declare -A PROFILE_DEFAULT
 PROFILE_DEFAULT[VERT]="disable"
 PROFILE_DEFAULT[WIDE]="disable"
@@ -30,12 +33,12 @@ PROFILE_DEFAULT[LPTP]="0 0,1.13"
 
 declare -A PROFILE_DOCKED
 PROFILE_DOCKED[VERT]="0 0,1.0,90"
-PROFILE_DOCKED[WIDE]="1080 0,1.0"
+PROFILE_DOCKED[WIDE]="1080 0,1.0,0,${REFRESH}"
 PROFILE_DOCKED[LPTP]="disable"
 
 declare -A PROFILE_MULTI
 PROFILE_MULTI[VERT]="0 0,1.0,90"
-PROFILE_MULTI[WIDE]="1080 0,1.0"
+PROFILE_MULTI[WIDE]="1080 0,1.0,0,${REFRESH}"
 PROFILE_MULTI[LPTP]="3640 0,1.13"
 PROFILE_MULTI[TELE]="5560 0,2.0"
 PROFILE_MULTI[KAUS]="5560 0,2.0"
@@ -133,7 +136,6 @@ is_output_key_active() {
 }
 
 get_active_output_name_from_key() {
-  echo "$1"
   if is_output_key_active "${1-}"; then
     get_output_name_from_key "$1"
   fi
@@ -163,21 +165,20 @@ set_focus() {
   local output_name=
   output_name="$(get_active_output_name_from_key "${1-}")"
   [ -z "$output_name" ] && output_name=$(get_outputs_focused --key)
-  swaymsg focus output \'"$output_name"\'
+  swaymsg focus output "$output_name"
 }
 
 #----- config
 
 delete_config() {
-  [ -f "$MONITOR_CONF" ] && rm "$MONITOR_CONF"
+  if [ -f "$MONITOR_CONF" ]; then rm "$MONITOR_CONF"; fi
+  return
 }
 
 set_config() {
   local key=
   local -a output_alias=()
   for output in "${!CURR_OUTPUTS[@]}"; do
-    printf "CURR: %s\n" "${CURR_OUTPUTS_CFG[$output]}"
-
     key="$(get_output_key "${CURR_OUTPUTS[$output]}")"
     output_alias+=("set \$monitor_${key,,} \"${CURR_OUTPUTS[$output]}\"")
 
@@ -216,7 +217,7 @@ set_config() {
 
     # enable output config in sway
     swaymsg "${output_config[*]}"
-    printf "CONF: %s\n" "${output_config[*]}"
+    # printf '%s\n' "${output_config[@]}"
   done
 
   # store output alias to sway config (for easy keymapping)

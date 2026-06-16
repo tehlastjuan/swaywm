@@ -55,7 +55,6 @@ set {
 
   # Terminal emulator
   $term footclient
-  $term_cwd $term -D "$(swaycwd 2>/dev/null || echo $HOME)"
   $term_float $term --app-id floating_shell --window-size-chars 82x25
 
   # Application launcher
@@ -77,7 +76,7 @@ set {
   $ncspot exec $once $term -a ncspot $local_lib/ncspot
 
   # Calendar app
-  $calendar exec $once $term_float calcurse
+  $calendar exec $once $term -a calcurse -T calcurse calcurse
 
   # Emoji app
   $emoji-picker emoji-picker

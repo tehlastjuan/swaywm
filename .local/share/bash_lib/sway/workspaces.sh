@@ -14,6 +14,22 @@ __get_outputs_lite() {
       default_mode: (.modes[0] | \"\(.width),\(.height),\(.refresh)\"), current_mode, rect } ]"
 }
 
+__tree_walk() {
+  swaymsg -t get_tree | jq -r \
+    "def walk: {
+      name,
+      output,
+      type, id,
+      app_id,
+      focus,
+      nodes: ((.nodes // []) | map(walk))
+    }
+    | if .nodes == [] then del(.nodes) else . end
+    | if .focus == [] then del(.focus) else . end
+    | if .output == null then del(.output) else . end;
+    walk"
+}
+
 __get_outputs() {
   swaymsg -t get_outputs | jq -r "[ .[] | \
     {
@@ -166,7 +182,6 @@ is_in_workspace() {
 }
 
 get_workspaces() {
-  # printf '%s\n' "$@"
   local ws=0
   case "${1-}" in
     --app)
@@ -209,67 +224,131 @@ get_workspace_focused() {
 # setters
 
 set_workspace_focused() {
-  local -i ws=
-  ws=$(get_workspaces "${1-}")
+  local -i ws=0
+  ws=$(get_workspaces "$@")
 
-  if [ "$ws" -gt 0 ]; then
+  if [ -n "$ws" ]; then
     local outputs
-    outputs=$(get_output_from_workspace "$ws")
+    outputs=$(get_output_from_workspace "$ws" | jq '.name' | sed 's/"//g')
     readarray -t _outputs<<<"$outputs"
     [ "${#_outputs[@]}" -gt 0 ] && {
-      echo "WS: $ws, OUTS: ${_outputs[0]}"
+      # printf '%s\n' "WS: $ws, OUTS: ${_outputs[0]}"
       swaymsg focus output \'"${_outputs[0]}"\'
     }
   fi
 }
 
 
+#----- tree
+
+__get_tree() {
+  swaymsg -t get_tree | jq -r "[ .nodes[]
+    | {
+        name, make, model, serial,
+        primary, non_desktop,
+        power, active,
+        focused, current_workspace,
+        default_mode: (.modes[0] | \"\(.width),\(.height),\(.refresh)\"),
+        # perform_mode: (
+        #   .modes as \$modes |
+        #     \$modes[0] as \$ref |
+        #     \$modes |
+        #     map(select(.width == \$ref.width and .height == \$ref.height)) |
+        #     sort_by(-.refresh) | .[0] | \"\(.width),\(.height),\(.refresh)\"
+        # )
+        current_mode: (
+          \"\(.current_mode.width),\(.current_mode.height),\(.current_mode.refresh)\"
+        ),
+        adaptive_sync_status
+        # allow_tearing,
+        # rect: (
+        #   \"\(.rect.x),\(.rect.y),\(.rect.width),\(.rect.height)\"
+        # ),
+        #scale, transform, percent
+        #nodes: (.nodes[])
+      }
+    # | {
+    #   name, make, model, serial,
+    #   primary, non_desktop,
+    #   power, active,
+    #   focused, current_workspace,
+    #   default_mode: (.modes[0] | \"\(.width),\(.height),\(.refresh)\"),
+    #   perform_mode: (
+    #     .modes as \$modes |
+    #       \$modes[0] as \$ref |
+    #       \$modes |
+    #       map(select(.width == \$ref.width and .height == \$ref.height)) |
+    #       sort_by(-.refresh) | .[0] | \"\(.width),\(.height),\(.refresh)\"
+    #   ),
+    #   current_mode: (
+    #     \"\(.current_mode.width),\(.current_mode.height),\(.current_mode.refresh)\"
+    #   ),
+    #   adaptive_sync_status,
+    #   allow_tearing,
+    #   rect: (
+    #     \"\(.rect.x),\(.rect.y),\(.rect.width),\(.rect.height)\"
+    #   ),
+    #   scale, transform, percent
+    # }
+  ]"
+
+}
+
+
+
+
+
 #----- main
 
 prt_help() {
   cat << EOT
-usage:  worskpaces.sh [FLAGS] [ARGS]
-        *args:
-        [--key]      := 'name'
-        [--name]     := 'make model serial'
-        [--key-name] := 'name={make model serial}'
-        [--config]   := 'name,(make,model,serial),(widths,height,refresh),scale,transform'
-        [--raw]      :=  json (default)
+usage: worskpaces.sh [FLAGS] [ARGS]
 
-        worskpaces.sh -o|--output   [NAME] [ARGS]    := return single output
-        worskpaces.sh --from-ws      [INT] [ARGS]    := return output(s) holding \$workspace_number
-        worskpaces.sh -O|--outputs  [ARGS]           := return output(s)
-        worskpaces.sh --active      [ARGS]           := return active output(s)
-        worskpaces.sh --focused     [ARGS]           := return focused output(s)
-        worskpaces.sh --query       [JSON] [ARGS]    := return json query'd output(s)
+flags:
+  --key       :'name'
+  --name      :'make model serial'
+  --key-name  :'name={make model serial}'
+  --config    :'name,(make,model,serial),(widths,height,refresh),scale,transform'
+  --raw       : json (default)
 
-        worskpaces.sh --set-focused               := set focus to \${key|name}
-        worskpaces.sh --set-scale [--up|--down]   := set output's scale (empty arg resets)
+options:
+  -o|--output [NAME] [ARGS]  :return single output
+  --from-ws [INT] [ARGS]     :return output(s) holding \$workspace_number
+  -O|--outputs [ARGS]        :return output(s)
+  --active [ARGS]            :return active output(s)
+  --focused [ARGS]           :return focused output(s)
+  --query [JSON] [ARGS]      :return json query'd output(s)
 
-        worskpaces.sh --is-in-ws             := returns true/false if \${app_name} exists in any workspace
-        worskpaces.sh --ws [KEY|INT]         := return \${app_name|output_key} workspace
-        worskpaces.sh --ws-apps [--raw]      := return \${app_name} workspace
-        worskpaces.sh --ws-focused           := return focused workspace number
-        worskpaces.sh --set-ws-focused       := set focus to \$workspace_number
+  --set-focused              :set focus to \${key|name}
+  --set-scale [--up|--down]  :set output's scale (empty arg resets)
 
-        sourcing:
-        get_outputs
-        get_outputs_active
-        get_outputs_focused
-        get_output
-        get_output_from_workspace
-        set_output_focused
-        set_output_scale
-        is_in_workspace
-        get_workspaces
-        get_workspace_apps
-        get_workspace_focused
-        set_workspace_focused
+  --is-in-ws                              :returns true/false if \${app_name} exists in any workspace
+  --get-ws [--app|--output] [ARGS]        :return \${app_name|output_key} workspace
+  --get-ws-apps [--raw]                   :return \${app_name} workspace
+  --get-ws-focused                        :return focused workspace number
+  --set-ws-focused --app|--output [ARGS]  :set focus to \$workspace_number
+
+sourcing:
+  get_outputs
+  get_outputs_active
+  get_outputs_focused
+  get_output
+  get_output_from_workspace
+  set_output_focused
+  set_output_scale
+  is_in_workspace
+  get_workspaces
+  get_workspace_apps
+  get_workspace_focused
+  set_workspace_focused
 EOT
 }
 
 workspaces() {
   case "${1-}" in
+    -h|--help)
+      prt_help
+      ;;
     -o|--output)
       shift
       get_output "$@"
@@ -306,15 +385,15 @@ workspaces() {
       shift
       is_in_workspace "$@"
       ;;
-    -ws|--ws)
+    --get-ws)
       shift
       get_workspaces "$@"
       ;;
-    --ws-apps)
+    --get-apps)
       shift
       get_workspace_apps "$@"
       ;;
-    --ws-focused)
+    --get-ws-focused)
       shift
       get_workspace_focused "$@"
       ;;
@@ -322,8 +401,9 @@ workspaces() {
       shift
       set_workspace_focused "$@"
       ;;
-    -h| --help)
-      prt_help
+    --get-tree)
+      shift
+      __get_tree "$@"
       ;;
   esac
 }

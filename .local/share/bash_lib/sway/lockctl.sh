@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # shellcheck disable=1091,2034
 
+# set -x
+
 source /usr/local/bin/userenv --
 source "${BASH_LIB}/utils/ulaptop"
 source "${BASH_LIB}/sway/lidctl.sh"
@@ -59,55 +61,45 @@ run_swayidle() {
   fi
 }
 
-run_swaylock(){
+run_waylock(){
   clear_pass_clip
-  # if pgrep 'swayidle'; then pkill --oldest 'swayidle'; fi
 
-  logger "WAYLOCK: $(pgrep 'waylock')"
-    #-fork-on-lock \
-  waylock -fork-on-lock \
-    -init-color 0x1e222a \
-    -input-color 0x2d3343 \
-    -fail-color 0xe06c75
+  logger "WAYLOCK(${1-}): $(pgrep 'waylock')"
+  command "${BASH_LIB}/sway/swaylock.sh"
 
-  # if ! pgrep 'swaylock'; then
+  # if ! pgrep 'waylock'; then
   #   command "${BASH_LIB}/sway/swaylock.sh"
-  #   logger "SWAYLOCK: run command"
   # fi
 }
 
-# runp_swaylock(){
-#   command "$BASH_LIB/sway/swaylock.sh" --process &
-#   waitpid "$!"
-#   run_swaylock
-# }
-
 lockctl() {
+  logger "lockctl: $(printf '%s ' "$@")"
   case "${1-}" in
-    -s|--allow-sleep|-h|--allow-hibernate)
-      lidctl "$@"
+    -s|--allow-sleep)
+      lidctl.sh "$@"
+      ;;
+    -h|--allow-hibernate)
+      lidctl.sh "$@"
       ;;
     --clear)
       clear_pass_clip
       ;;
     --lock)
-      run_swaylock
+      run_waylock
       ;;
     --unlock)
       run_swaymonitors
       ;;
     --suspend)
+      run_waylock "${1}"
       if check_flags ALLOW_SLEEP; then
-        run_swaylock && systemctl sleep
-      else
-        run_swaylock
+        systemctl sleep
       fi
       ;;
     --hibernate)
+      run_waylock "${1}"
       if check_flags ALLOW_HIBERNATE; then
-        run_swaylock && systemctl hibernate
-      else
-        run_swaylock
+        systemctl hibernate
       fi
       ;;
     --logout)
@@ -120,22 +112,32 @@ lockctl() {
       clear_pass_clip && systemctl poweroff
       ;;
     --lid)
+      # logger "lockctl: $(get_lid_state)"
+      # logger "lockctl: $(get_battery_state)"
       case "$(get_lid_state)" in
         open)
           run_swaymonitors
+          swaymsg reload
           ;;
         close)
-          if check_flags ALLOW_SLEEP; then
-            run_swaylock && systemctl sleep
-          else
-            run_swaylock
-          fi
+          case "$(get_battery_state)" in
+            charging)
+              run_swaymonitors
+              swaymsg reload
+              ;;
+            discharging)
+              run_waylock "${1} close"
+              if check_flags ALLOW_SLEEP; then
+                systemctl sleep
+              fi
+              ;;
+          esac
           ;;
       esac
-    ;;
+      ;;
   esac
 }
 
-if [[ "${#BASH_SOURCE[@]}" -eq 1 ]]; then
+if [ "${#BASH_SOURCE[@]}" -eq 1 ]; then
   lockctl "$@"
 fi
