@@ -80,7 +80,7 @@ set {
   $calendar exec $once $term_float calcurse
 
   # Emoji app
-  $emoji-picker emoji-picker
+  $emoji-picker "rofimoji -a clipboard"
 
   # pass
   $pass $sway_lib/pass.sh
